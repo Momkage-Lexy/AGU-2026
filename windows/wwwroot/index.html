@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>AGU 2026</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="../assets/images/favicon.ico" type="image/vnd.microsoft.icon">
+    <link rel="icon" href="assets/images/favicon.ico" type="image/vnd.microsoft.icon">
 
     <style>
         :root {
@@ -24,14 +24,14 @@
 
         @font-face {
             font-family: "Stratum-regular";
-            src: url("../assets/fonts/Stratum2-Regular.otf") format("opentype");
+            src: url("assets/fonts/Stratum2-Regular.otf") format("opentype");
             font-weight: 500;
             font-display: swap;
         }
 
         @font-face {
             font-family: "Stratum-bold";
-            src: url("../assets/fonts/Stratum2-Bold.otf") format("opentype");
+            src: url("assets/fonts/Stratum2-Bold.otf") format("opentype");
             font-weight: 800;
             font-display: swap;
         }
@@ -1028,7 +1028,7 @@
     </style>
 </head>
 <body>
-    <div class="top-nav"><img src="../assets/images/logo.png" id="homeLogo" draggable="false" style="cursor:pointer;"></div>
+    <div class="top-nav"><img src="assets/images/logo.png" id="homeLogo" draggable="false" style="cursor:pointer;"></div>
     <button type="button"id="backButton">&#8617; Back to previous question</button>
     <!-- Confetti -->
     <canvas id="confettiCanvas"></canvas>
@@ -1555,7 +1555,7 @@
                     tile.setAttribute("data-label", opt);
 
                     tile.innerHTML = `
-                        <img src="../assets/images/${clean}.png" alt="${opt}">
+                        <img src="assets/images/${clean}.png" alt="${opt}">
                         <input type="checkbox" id="${id}" value="${opt}">
                         <div class="checkbox-checkmark">✓</div>
                     `;
@@ -1586,7 +1586,7 @@
                         <div class="glow-wrap radio-glow">
                             <div class="radio-option">
                                 <span class="radio-bullet"></span>
-                                <img class="radio-icon" src="../assets/images/${clean}.png" alt="${opt}">
+                                <img class="radio-icon" src="assets/images/${clean}.png" alt="${opt}">
                                 <span class="radio-label-text">${opt}</span>
                                 <input type="radio" name="roundOpt" value="${opt}" id="${id}">
                             </div>
