@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>AGU 2026</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="../assets/images/favicon.ico" type="image/vnd.microsoft.icon">
 
     <style>
         :root {
@@ -248,12 +249,6 @@
             font-weight: 600;
             color: #333;
             text-align: left;
-        }
-
-        .required-note {
-            margin: 0 0 4px;
-            font-size: 0.85rem;
-            color: #666;
         }
 
         .field-error {
@@ -549,48 +544,216 @@
             border-radius: 50%;
             overflow: hidden;
             transition: transform 5s cubic-bezier(0.17, 0.67, 0.12, 0.99);
-
-            background: conic-gradient(
-                #d73f09 0deg 72deg,
-                #4A773C 72deg 144deg,
-                #003B5C 144deg 216deg,
-                #f7a162 216deg 288deg,
-                #D3832B 288deg 360deg
-            );
         }
 
-        .wheel-segment {
-            position: absolute;
-            width: 50%;
-            height: 50%;
-            top: 50%;
-            left: 50%;
-            transform-origin: 0% 0%;
-            transform: rotate(calc(72deg * var(--i)));
-            font-size: 2rem;
-            font-weight: 600;
-            color: white;
+        /* The wheel is drawn as SVG from the prize list (see renderWheel) */
+        .wheel-svg {
+            display: block;
+            width: 100%;
+            height: 100%;
         }
 
-        .wheel-segment::before {
-            content: "";
-            position: absolute;
-            width: 200%;
-            height: 200%;
-            top: -100%;
-            left: -100%;
-            background: inherit;
-            transform: skewY(18deg) rotate(calc(-72deg * var(--i)));
-        }
-
-        .wheel-segment span {
-            position: absolute;
-            top: -10px;
-            left: 30%;
-            transform: rotate(calc(-72deg * var(--i)));
-            font-size: 1.7rem;
+        .wheel-label {
+            fill: #fff;
+            font-family: Arial, Helvetica, sans-serif;
             font-weight: 700;
-            color: white;
+        }
+
+        .wheel-slice {
+            stroke: #fff;
+            stroke-width: 2;
+        }
+
+        .spin-button.disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        /* -------------------------------
+           ADMIN PANEL
+        --------------------------------*/
+        #homeLogo {
+            -webkit-user-select: none;
+            user-select: none;
+            -webkit-touch-callout: none;
+        }
+
+        .admin-backdrop {
+            z-index: 2000;
+        }
+
+        .admin-panel {
+            background: #fff;
+            border-radius: 20px;
+            padding: 32px 40px;
+            width: min(720px, 94vw);
+            max-height: 90vh;
+            overflow-y: auto;
+            text-align: left;
+            animation: popIn 0.3s ease;
+        }
+
+        .admin-panel h2 {
+            margin: 0 0 6px;
+            font-family: 'Stratum-bold', Arial, sans-serif;
+        }
+
+        .admin-hint {
+            margin: 0 0 18px;
+            color: #666;
+            font-size: 0.95rem;
+        }
+
+        .admin-input {
+            width: 100%;
+            padding: 10px 14px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-family: inherit;
+            outline: none;
+        }
+
+        .admin-input:focus {
+            border-color: var(--orange);
+        }
+
+        .admin-qty {
+            width: 90px;
+        }
+
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 18px;
+        }
+
+        .admin-table th {
+            text-align: left;
+            font-size: 0.85rem;
+            color: #666;
+            font-weight: 600;
+            padding: 0 8px 8px;
+            border-bottom: 2px solid #eee;
+        }
+
+        .admin-table td {
+            padding: 8px;
+            border-bottom: 1px solid #eee;
+            vertical-align: middle;
+        }
+
+        .admin-table tr.out .admin-input {
+            color: #999;
+        }
+
+        .admin-given {
+            color: #444;
+            text-align: center;
+        }
+
+        .admin-out-tag {
+            display: block;
+            font-size: 0.75rem;
+            color: var(--orange);
+            font-weight: 700;
+            margin-top: 2px;
+        }
+
+        .admin-empty {
+            color: #666;
+            text-align: center;
+            padding: 20px 0 !important;
+        }
+
+        .admin-remove {
+            border: 0;
+            background: #eee;
+            color: #333;
+            border-radius: 100px;
+            padding: 8px 14px;
+            cursor: pointer;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .admin-remove.armed {
+            background: var(--orange);
+            color: #fff;
+        }
+
+        .admin-add {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 18px;
+        }
+
+        .admin-add .button,
+        .admin-row-buttons .button {
+            height: 44px;
+            flex-shrink: 0;
+        }
+
+        .admin-section-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #666;
+            margin: 0 0 8px;
+        }
+
+        .admin-pin {
+            margin-bottom: 18px;
+            color: #444;
+        }
+
+        .admin-pin summary {
+            cursor: pointer;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .admin-row-buttons {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .admin-status {
+            min-height: 1.2em;
+            margin: 0 0 12px;
+            font-size: 0.9rem;
+            color: #4A773C;
+        }
+
+        .admin-status.error {
+            color: var(--orange);
+        }
+
+        #adminLoginView .admin-input {
+            margin-bottom: 6px;
+        }
+
+        #adminLoginView .field-error {
+            padding-left: 0;
+            margin-bottom: 10px;
+        }
+
+        .button-grey {
+            background-color: #d3d3d3 !important;
+            color: #333 !important;
+        }
+
+        .admin-close-app {
+            margin-left: auto;
+            width: auto;
+            padding: 0 22px;
+            height: 44px;
+        }
+
+        .admin-close-app.armed {
+            background-color: var(--orange) !important;
+            color: #fff !important;
         }
 
         /* Modal */
@@ -865,7 +1028,7 @@
     </style>
 </head>
 <body>
-    <div class="top-nav"><img src="../assets/images/logo.png" id="homeLogo" style="cursor:pointer;"></div>
+    <div class="top-nav"><img src="../assets/images/logo.png" id="homeLogo" draggable="false" style="cursor:pointer;"></div>
     <button type="button"id="backButton">&#8617; Back to previous question</button>
     <!-- Confetti -->
     <canvas id="confettiCanvas"></canvas>
@@ -880,7 +1043,6 @@
                     <div id="radioContainer" class="radio-group hide"></div>
                     <div id="emailField" class="hide">
                         <div class="contact-fields">
-                            <p class="required-note">* Required</p>
 
                             <div class="field-row">
                                 <div class="contact-field">
@@ -996,15 +1158,8 @@
             <div id="spinnerWheel2">
                 <div class="wheel-wrapper">
                     <div class="spin-button" id="spinBtn2"><p>SPIN</p></div>
-                    <div class="wheel" id="wheelElement2">    
-
-                            <span style="--i:0;"class="wheel-segment"><p style="rotate: 110deg; top: 20px; left: 118px; position: absolute;">Beach Ball</p></span>
-                            <span style="--i:1"class="wheel-segment"><p style="rotate: 110deg; position: absolute; left: 120px; top: -10px;">Giant<br>Highlighter</p></span>
-                            <span style="--i:2"class="wheel-segment"><p style="rotate: 108deg; left: 135px; position: absolute; top: 5px;">Calendar</p></span>
-                            <span style="--i:3"class="wheel-segment"><p style="rotate: 105deg; position: absolute; left: 140px;">Sticker</p></span>
-                            <span style="--i:4"class="wheel-segment"><p style="position: absolute; rotate: 110deg; left: 130px; top: 10px;">Magnet</p></span>
-
-                    </div>
+                    <!-- Slices are drawn by renderWheel() from the prize list -->
+                    <div class="wheel" id="wheelElement2"></div>
                 </div>
             </div>
 
@@ -1014,11 +1169,64 @@
     <!-- Prize modal (Round 2) -->
     <div class="modal-backdrop" id="prizeModal">
         <div class="modal-content">
-            <h2>Congratulations!</h2>
+            <h2 id="prizeTitle">Congratulations!</h2>
             <div class="prize-display" id="prizeValue">1</div>
-            <p>You've won a <strong id="prizeLabel">1 prize</strong>!</p>
+            <p id="prizeMessage">You've won a <strong id="prizeLabel">1 prize</strong>!</p>
             <div class="modal-buttons">
                 <button class="button" id="closeModal">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin panel: hold the logo for 3 seconds, or press Ctrl+Shift+A -->
+    <div class="modal-backdrop admin-backdrop" id="adminModal">
+        <div class="admin-panel">
+            <div id="adminLoginView">
+                <h2>Booth admin</h2>
+                <p class="admin-hint">Enter the admin PIN to manage the prize wheel.</p>
+                <input type="password" id="adminPinInput" class="admin-input" inputmode="numeric" autocomplete="off" placeholder="PIN">
+                <div class="field-error" id="adminPinError">Incorrect PIN.</div>
+                <div class="admin-row-buttons">
+                    <button type="button" class="button" id="adminLoginBtn">Unlock</button>
+                    <button type="button" class="button button-grey" id="adminCancelBtn">Cancel</button>
+                </div>
+            </div>
+
+            <div id="adminPrizesView" class="hide">
+                <h2>Prize wheel</h2>
+                <p class="admin-hint">
+                    Each prize with at least 1 left gets a slice on the wheel. When a prize reaches 0
+                    it disappears from the wheel automatically. Changes save as soon as you leave a field.
+                </p>
+
+                <table class="admin-table">
+                    <thead>
+                        <tr><th>Prize</th><th>Left</th><th>Given away</th><th></th></tr>
+                    </thead>
+                    <tbody id="adminPrizeRows"></tbody>
+                </table>
+
+                <p class="admin-section-title">Add a prize</p>
+                <form id="addPrizeForm" class="admin-add">
+                    <input id="newPrizeName" class="admin-input" type="text" maxlength="40" placeholder="Prize name" autocomplete="off">
+                    <input id="newPrizeQty" class="admin-input admin-qty" type="number" min="0" value="10" aria-label="How many">
+                    <button type="submit" class="button">Add</button>
+                </form>
+
+                <details class="admin-pin">
+                    <summary>Change admin PIN</summary>
+                    <div class="admin-row-buttons">
+                        <input type="password" id="newPinInput" class="admin-input" inputmode="numeric" autocomplete="off" placeholder="New PIN (4–8 digits)">
+                        <button type="button" class="button" id="changePinBtn">Save PIN</button>
+                    </div>
+                </details>
+
+                <p class="admin-status" id="adminStatus"></p>
+
+                <div class="admin-row-buttons">
+                    <button type="button" class="button" id="adminDoneBtn">Done</button>
+                    <button type="button" class="button button-grey admin-close-app" id="closeAppBtn">Close app</button>
+                </div>
             </div>
         </div>
     </div>
@@ -1055,6 +1263,9 @@
     <script>
 
         document.getElementById("homeLogo").addEventListener("click", () => {
+        // A long press opened the admin panel; don't also reset the survey
+        if (logoHeld) { logoHeld = false; return; }
+
         // Close modal if open
         document.getElementById("prizeModal").classList.remove("active");
 
@@ -1150,7 +1361,7 @@
             role: "", experience: "", brought: "", centers: [], followUp: "",
             firstName: "", lastName: "", dob: "", email: "", gradEntry: "", program: ""
         };
-        let lastPrize = 0;
+        let lastPrize = "";
 
         function resetAnswers() {
             answers.role = "";
@@ -1632,6 +1843,9 @@
             questionForm.classList.add("hide");
             youWinBlock.classList.remove("show");
             spinnerWheel2.classList.add("show");
+
+            // Nothing left to win: skip the spin and go straight to the thank-you
+            if (wheelPrizes.length === 0) showPrizeModal(null);
         }
 
         loadQuestion();
@@ -1769,48 +1983,237 @@
         --------------------------------*/
         const wheel2 = document.getElementById("wheelElement2");
         const spinBtn2 = document.getElementById("spinBtn2");
+        const prizeModal = document.getElementById("prizeModal");
         let rotation2 = 0;
         let isSpinning2 = false;
 
-        function showPrizeModal(prize) {
-            lastPrize = prize;
-            document.getElementById("prizeValue").textContent = prize;
-            document.getElementById("prizeLabel").textContent = `${prize}`;
-            document.getElementById("prizeModal").classList.add("active");
+        /* -------------------------------
+           TALKING TO THE C# APP
+           Messages go out with sendToHost({ type: ... }).
+           Replies come back and are routed by their "type" to onHost handlers.
+           Opened in a normal browser (no C# app), a built-in test host
+           stands in so the page can still be tried out.
+        --------------------------------*/
+        const hasHost = !!(window.chrome && window.chrome.webview);
+        const hostHandlers = {};
 
-            // burst from wheel center
-            const wheelRect = wheel2.getBoundingClientRect();
-            startConfetti(
-                wheelRect.left + wheelRect.width / 2,
-                wheelRect.top + wheelRect.height / 2
-            );
+        function onHost(type, handler) {
+            hostHandlers[type] = handler;
+        }
+
+        function receiveFromHost(msg) {
+            if (msg && hostHandlers[msg.type]) hostHandlers[msg.type](msg);
+        }
+
+        function sendToHost(msg) {
+            if (hasHost) window.chrome.webview.postMessage(msg);
+            else testHost(msg);
+        }
+
+        if (hasHost) {
+            window.chrome.webview.addEventListener("message", e => receiveFromHost(e.data));
+        }
+
+        // Browser-only stand-in for the C# app. Nothing here is saved.
+        const testState = {
+            pin: "1234",
+            nextId: 6,
+            prizes: ["Beach Ball", "Giant Highlighter", "Calendar", "Sticker", "Magnet"]
+                .map((name, i) => ({ id: i + 1, name, remaining: 25, given: 0 }))
+        };
+
+        function testHost(msg) {
+            const reply = m => setTimeout(() => receiveFromHost(m), 0);
+            const sendList = () => reply({ type: "prizes", prizes: testState.prizes.map(p => ({ ...p })) });
+            const find = id => testState.prizes.find(p => p.id === id);
+
+            switch (msg.type) {
+                case "getPrizes":
+                    sendList();
+                    break;
+                case "prizeWon": {
+                    const p = find(msg.id);
+                    if (p && p.remaining > 0) { p.remaining--; p.given++; }
+                    sendList();
+                    break;
+                }
+                case "adminLogin":
+                    reply({ type: "adminLogin", ok: msg.pin === testState.pin });
+                    break;
+                case "savePrize": {
+                    const p = find(msg.id);
+                    if (p) { p.name = msg.name; p.remaining = msg.remaining; }
+                    else testState.prizes.push({ id: testState.nextId++, name: msg.name, remaining: msg.remaining, given: 0 });
+                    sendList();
+                    break;
+                }
+                case "deletePrize":
+                    testState.prizes = testState.prizes.filter(p => p.id !== msg.id);
+                    sendList();
+                    break;
+                case "changePin":
+                    testState.pin = msg.newPin;
+                    reply({ type: "pinChanged", ok: true });
+                    break;
+                case "survey":
+                    console.log("Survey submitted (test mode, not saved):", msg);
+                    break;
+                case "closeApp":
+                    setAdminStatus("Test mode: in the real app, this would close it now.");
+                    break;
+            }
+        }
+
+        function escapeHtml(s) {
+            return String(s)
+                .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+        }
+
+        /* -------------------------------
+           PRIZES + WHEEL DRAWING
+        --------------------------------*/
+        let allPrizes = [];     // every prize, including ones with 0 left (for the admin list)
+        let wheelPrizes = [];   // the prizes currently drawn on the wheel, in slice order
+
+        const WHEEL_COLORS = ["#d73f09", "#4A773C", "#003B5C", "#f7a162", "#D3832B"];
+        const WHEEL_RADIUS = 300;
+
+        onHost("prizes", msg => {
+            allPrizes = msg.prizes || [];
+            renderAdminList();
+
+            // Don't redraw the wheel under someone mid-spin or looking at their prize;
+            // resetAll() redraws it for the next visitor.
+            if (!isSpinning2 && !prizeModal.classList.contains("active")) renderWheel();
+        });
+
+        // Point on a circle, measured clockwise from 12 o'clock
+        function polar(r, deg) {
+            const a = deg * Math.PI / 180;
+            return [r * Math.sin(a), -r * Math.cos(a)];
+        }
+
+        // Long names go on two lines, split at the space nearest the middle
+        function splitLabel(name) {
+            if (name.length <= 12 || !name.includes(" ")) return [name];
+            const mid = name.length / 2;
+            let best = -1;
+            for (let i = 0; i < name.length; i++) {
+                if (name[i] === " " && (best < 0 || Math.abs(i - mid) < Math.abs(best - mid))) best = i;
+            }
+            return [name.slice(0, best), name.slice(best + 1)];
+        }
+
+        function renderWheel() {
+            wheelPrizes = allPrizes.filter(p => p.remaining > 0);
+            const n = wheelPrizes.length;
+            const R = WHEEL_RADIUS;
+            const slice = 360 / Math.max(n, 1);
+
+            let svg = `<svg class="wheel-svg" viewBox="${-R} ${-R} ${2 * R} ${2 * R}" xmlns="http://www.w3.org/2000/svg">`;
+
+            if (n === 0) {
+                svg += `<circle r="${R}" fill="#9a9a9a"/>`;
+            }
+
+            wheelPrizes.forEach((p, i) => {
+                let color = WHEEL_COLORS[i % WHEEL_COLORS.length];
+                // Keep the last slice from matching the first one it touches
+                if (n > 1 && i === n - 1 && i % WHEEL_COLORS.length === 0) color = WHEEL_COLORS[2];
+
+                if (n === 1) {
+                    svg += `<circle r="${R}" fill="${color}"/>`;
+                } else {
+                    const [x0, y0] = polar(R, i * slice);
+                    const [x1, y1] = polar(R, (i + 1) * slice);
+                    const largeArc = slice > 180 ? 1 : 0;
+                    svg += `<path class="wheel-slice" d="M0 0 L${x0} ${y0} A${R} ${R} 0 ${largeArc} 1 ${x1} ${y1} Z" fill="${color}"/>`;
+                }
+
+                // Label runs along the middle of the slice, reading outward
+                const lines = splitLabel(p.name);
+                const longest = Math.max(...lines.map(l => l.length));
+                const sliceWidthAtLabel = 2 * Math.PI * (R * 0.6) / n;
+                const size = Math.max(11, Math.min(
+                    30,
+                    380 / longest,                                  // fits between hub and rim
+                    sliceWidthAtLabel / (lines.length * 1.25)       // fits across the slice
+                ));
+                const labelY = -R * 0.6;
+                const mid = (i + 0.5) * slice;
+
+                svg += `<g transform="rotate(${mid})">` +
+                       `<text class="wheel-label" font-size="${size.toFixed(1)}" text-anchor="middle" dominant-baseline="central" ` +
+                       `transform="translate(0 ${labelY}) rotate(-90)">`;
+                lines.forEach((line, li) => {
+                    const dy = (li - (lines.length - 1) / 2) * size * 1.1;
+                    svg += `<tspan x="0" y="${dy.toFixed(1)}">${escapeHtml(line)}</tspan>`;
+                });
+                svg += `</text></g>`;
+            });
+
+            svg += `</svg>`;
+            wheel2.innerHTML = svg;
+
+            spinBtn2.classList.toggle("disabled", n === 0);
+        }
+
+        function showPrizeModal(prize) {
+            lastPrize = prize || "";
+            const title = document.getElementById("prizeTitle");
+            const value = document.getElementById("prizeValue");
+            const message = document.getElementById("prizeMessage");
+
+            if (prize) {
+                title.textContent = "Congratulations!";
+                value.textContent = prize;
+                value.classList.remove("hide");
+                message.innerHTML = `You've won a <strong id="prizeLabel">${escapeHtml(prize)}</strong>!`;
+            } else {
+                title.textContent = "Thank you!";
+                value.classList.add("hide");
+                message.textContent = "We've given away all of our prizes, but we really appreciate you taking the survey.";
+            }
+
+            prizeModal.classList.add("active");
+
+            if (prize) {
+                // burst from wheel center
+                const wheelRect = wheel2.getBoundingClientRect();
+                startConfetti(
+                    wheelRect.left + wheelRect.width / 2,
+                    wheelRect.top + wheelRect.height / 2
+                );
+            }
         }
 
         spinBtn2.addEventListener("click", () => {
-            if (isSpinning2) return;
+            if (isSpinning2 || wheelPrizes.length === 0) return;
             isSpinning2 = true;
             spinBtn2.classList.add("spinning");
 
-            const spins = 5 + Math.floor(Math.random() * 3);
-            const extra = Math.floor(Math.random() * 360);
-            const total = (spins * 360) + extra;
+            // Pick the winner first (every slice has an equal chance),
+            // then turn the wheel so that slice stops under the pointer at 12 o'clock.
+            const n = wheelPrizes.length;
+            const slice = 360 / n;
+            const winnerIndex = Math.floor(Math.random() * n);
+            const winner = wheelPrizes[winnerIndex];
 
-            rotation2 += total;
+            const sliceCentre = (winnerIndex + 0.5) * slice;
+            const wobble = (Math.random() - 0.5) * slice * 0.7;     // don't always stop dead-centre
+            const current = ((rotation2 % 360) + 360) % 360;
+            const target = (((360 - sliceCentre - wobble) % 360) + 360) % 360;
+            const spins = 5 + Math.floor(Math.random() * 3);
+
+            rotation2 += spins * 360 + ((target - current + 360) % 360);
             wheel2.style.transform = `rotate(${rotation2}deg)`;
 
             setTimeout(() => {
-
-            const normalized = (rotation2 + 106) % 360;
-
-            const angle = (360 - normalized + 32) % 360;
-
-            const segment = Math.floor(angle / 72);
-            const prizeIndex = segment % 5;
-             // 0–4
-
-                const prizes = ["Beach Ball", "Giant Highlighter", "Calendar", "Sticker", "Magnet"];
-                showPrizeModal(prizes[prizeIndex]);
-
+                // Take one off the stock straight away, so it counts even if
+                // nobody taps Close on the prize popup
+                sendToHost({ type: "prizeWon", id: winner.id });
+                showPrizeModal(winner.name);
 
                 isSpinning2 = false;
                 spinBtn2.classList.remove("spinning");
@@ -1818,13 +2221,15 @@
         });
 
         function resetAll() {
-            document.getElementById("prizeModal").classList.remove("active");
+            prizeModal.classList.remove("active");
 
             round = 1;
             questions = round1Questions;
             qIndex = 0;
 
             resetAnswers();
+            lastPrize = "";
+            renderWheel();  // pick up any stock changes for the next visitor
             history = [];
             clearContactFields();
             document.getElementById("emailField").classList.add("hide");
@@ -1846,27 +2251,236 @@
         }
 
         document.getElementById("closeModal").addEventListener("click", () => {
-            // Send to host (WebView) if available
-            if (window.chrome && window.chrome.webview) {
-                window.chrome.webview.postMessage({
-                    role: answers.role,
-                    experience: answers.experience,
-                    brought: answers.brought,
-                    centers: answers.centers,
-                    followUp: answers.followUp,
-                    firstName: answers.firstName,
-                    lastName: answers.lastName,
-                    // Combined name kept for anything still reading the old "name" field
-                    name: `${answers.firstName} ${answers.lastName}`.trim(),
-                    dob: answers.dob,
-                    email: answers.email,
-                    gradEntry: answers.gradEntry,
-                    program: answers.program
-                });
-            }
+            sendToHost({
+                type: "survey",
+                role: answers.role,
+                experience: answers.experience,
+                brought: answers.brought,
+                centers: answers.centers,
+                followUp: answers.followUp,
+                firstName: answers.firstName,
+                lastName: answers.lastName,
+                // Combined name kept for anything still reading the old "name" field
+                name: `${answers.firstName} ${answers.lastName}`.trim(),
+                dob: answers.dob,
+                email: answers.email,
+                gradEntry: answers.gradEntry,
+                program: answers.program,
+                prize: lastPrize
+            });
 
             resetAll();
         });
+
+        /* -------------------------------
+           ADMIN PANEL
+           Open: hold the logo for 3 seconds, or press Ctrl+Shift+A.
+           The PIN is checked by the C# app, which also refuses
+           prize changes until the PIN has been entered.
+        --------------------------------*/
+        const adminModal = document.getElementById("adminModal");
+        const adminLoginView = document.getElementById("adminLoginView");
+        const adminPrizesView = document.getElementById("adminPrizesView");
+        const adminPinInput = document.getElementById("adminPinInput");
+        const adminPinError = document.getElementById("adminPinError");
+        const adminStatus = document.getElementById("adminStatus");
+        const homeLogo = document.getElementById("homeLogo");
+
+        let logoHoldTimer = null;
+        let logoHeld = false;
+
+        homeLogo.addEventListener("pointerdown", () => {
+            logoHeld = false;
+            clearTimeout(logoHoldTimer);
+            logoHoldTimer = setTimeout(() => {
+                logoHeld = true;
+                openAdmin();
+            }, 3000);
+        });
+        ["pointerup", "pointerleave", "pointercancel"].forEach(evt =>
+            homeLogo.addEventListener(evt, () => clearTimeout(logoHoldTimer))
+        );
+        // Stop a touchscreen long-press from opening the right-click menu
+        homeLogo.addEventListener("contextmenu", e => e.preventDefault());
+
+        document.addEventListener("keydown", e => {
+            if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === "a") {
+                e.preventDefault();
+                openAdmin();
+            } else if (e.key === "Escape" && adminModal.classList.contains("active")) {
+                closeAdmin();
+            }
+        });
+
+        function setAdminStatus(text, isError = false) {
+            adminStatus.textContent = text;
+            adminStatus.classList.toggle("error", isError);
+        }
+
+        function openAdmin() {
+            if (adminModal.classList.contains("active")) return;
+            adminLoginView.classList.remove("hide");
+            adminPrizesView.classList.add("hide");
+            adminPinInput.value = "";
+            adminPinError.classList.remove("show");
+            setAdminStatus("");
+            adminModal.classList.add("active");
+            adminPinInput.focus();
+        }
+
+        function closeAdmin() {
+            adminModal.classList.remove("active");
+            sendToHost({ type: "adminLogout" });
+        }
+
+        function submitPin() {
+            const pin = adminPinInput.value.trim();
+            if (!pin) return;
+            sendToHost({ type: "adminLogin", pin });
+        }
+
+        document.getElementById("adminLoginBtn").addEventListener("click", submitPin);
+        adminPinInput.addEventListener("keydown", e => { if (e.key === "Enter") submitPin(); });
+        document.getElementById("adminCancelBtn").addEventListener("click", closeAdmin);
+        document.getElementById("adminDoneBtn").addEventListener("click", closeAdmin);
+
+        onHost("adminLogin", msg => {
+            if (msg.ok) {
+                adminLoginView.classList.add("hide");
+                adminPrizesView.classList.remove("hide");
+                sendToHost({ type: "getPrizes" });
+            } else {
+                adminPinError.classList.add("show");
+                adminPinInput.select();
+            }
+        });
+
+        onHost("pinChanged", () => {
+            document.getElementById("newPinInput").value = "";
+            setAdminStatus("PIN updated.");
+        });
+
+        onHost("error", msg => {
+            if (adminModal.classList.contains("active")) setAdminStatus(msg.message || "Something went wrong.", true);
+        });
+
+        function renderAdminList() {
+            const tbody = document.getElementById("adminPrizeRows");
+            tbody.innerHTML = "";
+
+            if (allPrizes.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" class="admin-empty">No prizes yet. Add one below.</td></tr>`;
+                return;
+            }
+
+            allPrizes.forEach(p => {
+                const tr = document.createElement("tr");
+                if (p.remaining <= 0) tr.classList.add("out");
+
+                tr.innerHTML = `
+                    <td>
+                        <input class="admin-input" type="text" maxlength="40" value="${escapeHtml(p.name)}" aria-label="Prize name">
+                        ${p.remaining <= 0 ? '<span class="admin-out-tag">Out of stock, not on the wheel</span>' : ""}
+                    </td>
+                    <td><input class="admin-input admin-qty" type="number" min="0" value="${p.remaining}" aria-label="How many left"></td>
+                    <td class="admin-given">${p.given}</td>
+                    <td><button type="button" class="admin-remove">Remove</button></td>
+                `;
+
+                const [nameInput, qtyInput] = tr.querySelectorAll("input");
+
+                const save = () => {
+                    const name = nameInput.value.trim();
+                    const remaining = Math.max(0, parseInt(qtyInput.value, 10) || 0);
+                    if (!name) { nameInput.value = p.name; return; }
+                    if (name === p.name && remaining === p.remaining) return;
+                    sendToHost({ type: "savePrize", id: p.id, name, remaining });
+                    setAdminStatus(`Saved ${name}.`);
+                };
+                nameInput.addEventListener("change", save);
+                qtyInput.addEventListener("change", save);
+
+                // Two taps to remove, so a stray tap doesn't delete a prize
+                const removeBtn = tr.querySelector(".admin-remove");
+                let armed = false;
+                let disarmTimer = null;
+                removeBtn.addEventListener("click", () => {
+                    if (!armed) {
+                        armed = true;
+                        removeBtn.textContent = "Tap again to remove";
+                        removeBtn.classList.add("armed");
+                        disarmTimer = setTimeout(() => {
+                            armed = false;
+                            removeBtn.textContent = "Remove";
+                            removeBtn.classList.remove("armed");
+                        }, 3000);
+                        return;
+                    }
+                    clearTimeout(disarmTimer);
+                    sendToHost({ type: "deletePrize", id: p.id });
+                    setAdminStatus(`Removed ${p.name}.`);
+                });
+
+                tbody.appendChild(tr);
+            });
+        }
+
+        document.getElementById("addPrizeForm").addEventListener("submit", e => {
+            e.preventDefault();
+            const nameInput = document.getElementById("newPrizeName");
+            const qtyInput = document.getElementById("newPrizeQty");
+            const name = nameInput.value.trim();
+            const remaining = Math.max(0, parseInt(qtyInput.value, 10) || 0);
+
+            if (!name) { nameInput.focus(); return; }
+            if (allPrizes.some(p => p.name.toLowerCase() === name.toLowerCase())) {
+                setAdminStatus(`There's already a prize called ${name}. Change its count instead.`, true);
+                return;
+            }
+
+            sendToHost({ type: "savePrize", id: 0, name, remaining });
+            setAdminStatus(`Added ${name}.`);
+            nameInput.value = "";
+            qtyInput.value = "10";
+            nameInput.focus();
+        });
+
+        // Two taps to close the app, same as removing a prize
+        const closeAppBtn = document.getElementById("closeAppBtn");
+        let closeArmed = false;
+        let closeDisarmTimer = null;
+
+        function disarmCloseApp() {
+            closeArmed = false;
+            clearTimeout(closeDisarmTimer);
+            closeAppBtn.textContent = "Close app";
+            closeAppBtn.classList.remove("armed");
+        }
+
+        closeAppBtn.addEventListener("click", () => {
+            if (!closeArmed) {
+                closeArmed = true;
+                closeAppBtn.textContent = "Tap again to close";
+                closeAppBtn.classList.add("armed");
+                closeDisarmTimer = setTimeout(disarmCloseApp, 3000);
+                return;
+            }
+            disarmCloseApp();
+            sendToHost({ type: "closeApp" });
+        });
+
+        document.getElementById("changePinBtn").addEventListener("click", () => {
+            const newPin = document.getElementById("newPinInput").value.trim();
+            if (!/^\d{4,8}$/.test(newPin)) {
+                setAdminStatus("The PIN must be 4 to 8 digits.", true);
+                return;
+            }
+            sendToHost({ type: "changePin", newPin });
+        });
+
+        // Load the prize list as soon as the page opens
+        renderWheel();
+        sendToHost({ type: "getPrizes" });
     </script>
 </body>
 </html>
