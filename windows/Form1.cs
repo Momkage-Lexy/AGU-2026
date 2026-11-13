@@ -23,6 +23,10 @@ namespace windows
         // Set when the correct PIN is entered; cleared when the admin panel closes.
         private bool adminUnlocked = false;
 
+        // Only the admin panel's "Close app" button sets this. Until then,
+        // Alt+F4 and other attempts to close the window are ignored.
+        private bool allowClose = false;
+
         private static readonly JsonSerializerOptions JsonOptions = new()
         {
             PropertyNameCaseInsensitive = true,
@@ -56,8 +60,78 @@ namespace windows
         public Form1()
         {
             InitializeComponent();
+            SetUpKioskWindow();
             InitializeDatabase();
             InitializeAsync();
+        }
+
+        // ==================================================================
+        // KIOSK WINDOW: full screen, no title bar, can't be closed by visitors
+        // ==================================================================
+
+        private void SetUpKioskWindow()
+        {
+            FormBorderStyle = FormBorderStyle.None;   // no title bar, no X / minimize buttons
+            ControlBox = false;
+            StartPosition = FormStartPosition.Manual;
+            TopMost = true;                           // stay above the taskbar and other windows
+            FillScreen();
+
+            // Re-fill the screen if the tablet is rotated or the display changes
+            Microsoft.Win32.SystemEvents.DisplaySettingsChanged += OnDisplaySettingsChanged;
+        }
+
+        private void FillScreen()
+        {
+            WindowState = FormWindowState.Normal;
+            Bounds = Screen.FromControl(this).Bounds;
+            WindowState = FormWindowState.Maximized;
+        }
+
+        private void OnDisplaySettingsChanged(object? sender, EventArgs e)
+        {
+            if (IsHandleCreated) BeginInvoke(new Action(FillScreen));
+        }
+
+        protected override void OnFormClosing(FormClosingEventArgs e)
+        {
+            // Block Alt+F4 and similar. Still allow Windows to shut down or restart.
+            if (!allowClose && e.CloseReason == CloseReason.UserClosing)
+            {
+                e.Cancel = true;
+                return;
+            }
+            base.OnFormClosing(e);
+        }
+
+        protected override void OnFormClosed(FormClosedEventArgs e)
+        {
+            Microsoft.Win32.SystemEvents.DisplaySettingsChanged -= OnDisplaySettingsChanged;
+            base.OnFormClosed(e);
+        }
+
+        // Turn off browser features a visitor could use to get out of the survey
+        private void LockDownWebView(CoreWebView2 core)
+        {
+            var s = core.Settings;
+            s.AreDefaultContextMenusEnabled = false;     // no right-click / long-press menu
+            s.AreBrowserAcceleratorKeysEnabled = false;  // no Ctrl+P, F5, Ctrl+F, etc. (the page's own Ctrl+Shift+A still works)
+            s.IsZoomControlEnabled = false;              // no Ctrl+scroll zoom
+            s.IsPinchZoomEnabled = false;                // no two-finger zoom on the touchscreen
+            s.IsSwipeNavigationEnabled = false;          // no swipe left/right to go back/forward
+            s.IsStatusBarEnabled = false;
+#if !DEBUG
+            s.AreDevToolsEnabled = false;                // F12 tools stay on only in debug builds
+#endif
+
+            // Links that try to open a new window (e.g. the icon credits) do nothing
+            core.NewWindowRequested += (_, e) => e.Handled = true;
+
+            // Only allow the survey's own local files, never a website
+            core.NavigationStarting += (_, e) =>
+            {
+                if (!e.Uri.StartsWith("file:", StringComparison.OrdinalIgnoreCase)) e.Cancel = true;
+            };
         }
 
         // ==================================================================
@@ -156,6 +230,7 @@ namespace windows
         private async void InitializeAsync()
         {
             await webView21.EnsureCoreWebView2Async(null);
+            LockDownWebView(webView21.CoreWebView2);
 
             // Attach before navigating so the page's first message isn't missed
             webView21.CoreWebView2.WebMessageReceived += CoreWebView2_WebMessageReceived;
@@ -224,6 +299,7 @@ namespace windows
 
                     case "closeApp":
                         RequireAdmin();
+                        allowClose = true;
                         // Let this message handler finish before the window goes away
                         BeginInvoke(new Action(Close));
                         break;
