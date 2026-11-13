@@ -1094,9 +1094,12 @@
                             </div>
 
                             <div class="contact-field">
-                                <label class="field-label" for="programInput">Academic program</label>
+                                <label class="field-label" for="programSelect">Academic program of interest</label>
                                 <div class="email-glow-wrap">
-                                    <input type="text" id="programInput" placeholder="e.g. Ocean, Earth, and Atmospheric Sciences">
+                                    <!-- Options are filled in from the ACADEMIC_PROGRAMS list in the script -->
+                                    <select id="programSelect">
+                                        <option value="">Select a program</option>
+                                    </select>
                                 </div>
                             </div>
                         </div>
@@ -1381,6 +1384,107 @@
         }
 
         /* -------------------------------
+           ACADEMIC PROGRAMS (dropdown on the contact form)
+           OSU graduate majors, from the OSU catalog.
+           To change the list, edit the names below: one per line,
+           in quotes, with a comma after each. They're shown in this order.
+           Whatever the visitor picks is saved as-is in the "Academic Program" column.
+        --------------------------------*/
+        const ACADEMIC_PROGRAMS = [
+            "Adapted Physical Education",
+            "Adult and Higher Education",
+            "Agricultural Education",
+            "Animal Science",
+            "Applied Anthropology",
+            "Applied Economics",
+            "Applied Ethics",
+            "Artificial Intelligence",
+            "Athletic Training",
+            "Biochemistry and Biophysics",
+            "Bioengineering",
+            "Biological and Ecological Engineering",
+            "Botany and Plant Pathology",
+            "Business Administration",
+            "Business Analytics and Applied AI",
+            "Business",
+            "Chemical Engineering",
+            "Chemistry",
+            "Civil Engineering",
+            "College Student Services Administration",
+            "Communication",
+            "Comparative Health Sciences",
+            "Computer Science",
+            "Counseling",
+            "Creative Writing",
+            "Crop Science",
+            "Data Analytics",
+            "Education",
+            "Electrical and Computer Engineering",
+            "Engineering Management",
+            "English",
+            "Entomology",
+            "Environmental Engineering",
+            "Environmental Sciences",
+            "Fisheries and Wildlife Administration",
+            "Fisheries, Wildlife, and Conservation Sciences",
+            "Food Science and Technology",
+            "Forest Ecosystems and Society",
+            "Geography and Geospatial Science",
+            "Geology",
+            "History",
+            "Horticulture",
+            "Human Development and Family Studies",
+            "Industrial Engineering",
+            "Information Systems",
+            "Integrative Biology",
+            "Interdisciplinary Studies",
+            "Kinesiology",
+            "Marine Resource Management",
+            "Materials Science",
+            "Mathematics",
+            "Mechanical Engineering",
+            "Microbiology",
+            "Natural Resources",
+            "Nuclear Engineering",
+            "Nutrition",
+            "Ocean, Earth and Atmospheric Sciences",
+            "Pharmaceutical Sciences",
+            "Physics",
+            "Psychology",
+            "Public Health",
+            "Public Policy",
+            "Radiation Health Physics",
+            "Rangeland Ecology and Management",
+            "Robotics",
+            "Soil Science",
+            "Statistics",
+            "Supply Chain and Logistics Management",
+            "Sustainable Forest Management",
+            "Teaching",
+            "Toxicology",
+            "Water Resources Engineering",
+            "Water Resources Policy and Management",
+            "Water Resources Science",
+            "Women, Gender, and Sexuality Studies",
+            "Wood Innovation for Sustainability",
+            "Wood Science",
+            "Writing",
+        ];
+
+        // Always offered last, for anyone who doesn't see their program
+        const PROGRAM_OTHER = "Other / Not sure yet";
+
+        (function fillProgramSelect() {
+            const select = document.getElementById("programSelect");
+            [...ACADEMIC_PROGRAMS, PROGRAM_OTHER].forEach(name => {
+                const opt = document.createElement("option");
+                opt.value = name;
+                opt.textContent = name;
+                select.appendChild(opt);
+            });
+        })();
+
+        /* -------------------------------
            CONTACT INFO FIELDS
         --------------------------------*/
         const contactInputs = {
@@ -1389,7 +1493,7 @@
             dob:       document.getElementById("dobInput"),
             email:     document.getElementById("emailInput"),
             gradEntry: document.getElementById("gradEntrySelect"),
-            program:   document.getElementById("programInput")
+            program:   document.getElementById("programSelect")
         };
 
         const contactErrors = {
@@ -1431,7 +1535,7 @@
                 dob:       contactInputs.dob.value,          // YYYY-MM-DD
                 email:     contactInputs.email.value.trim(),
                 gradEntry: contactInputs.gradEntry.value,
-                program:   contactInputs.program.value.trim()
+                program:   contactInputs.program.value
             };
 
             const checks = {
