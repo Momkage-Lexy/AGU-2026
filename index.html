@@ -1,0 +1,2486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AGU 2026</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="windows/wwwroot/assets/images/favicon.ico" type="image/vnd.microsoft.icon">
+
+    <style>
+        :root {
+            --orange: #d73f09;
+            --orange-soft: #ffb36a;
+            --bg: #f8f8f8;
+            --card: #ffffff;
+            --shadow-soft: -10px -10px 15px rgba(255, 255, 255, 0.6),
+                           10px 10px 20px rgba(70, 70, 70, 0.18);
+            --shadow-inset: inset -5px -5px 9px rgba(255, 255, 255, 0.6),
+                            inset 5px 5px 9px rgba(94, 104, 121, 0.35);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        @font-face {
+            font-family: "Stratum-regular";
+            src: url("windows/wwwroot/assets/fonts/Stratum2-Regular.otf") format("opentype");
+            font-weight: 500;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: "Stratum-bold";
+            src: url("windows/wwwroot/assets/fonts/Stratum2-Bold.otf") format("opentype");
+            font-weight: 800;
+            font-display: swap;
+        }
+
+        body {
+            background-color: var(--bg);
+            display: flex;
+            justify-content: stretch;
+            align-items: center;
+            min-height: 100vh;
+            position: relative;
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            flex-direction: column;
+        }
+
+        /* Top left labels */
+        h1 {
+            color: #00000030;
+            font-weight: 900;
+            font-size: 1.25rem;
+            margin: 0;
+            rotate: -90deg;
+            position: absolute;
+            top: 40px;
+            left: -20px;
+            pointer-events: none;
+        }
+
+        h2.main-title {
+            color: #000;
+            font-weight: 300;
+            font-size: 3rem;
+            margin: 0;
+            border-left: 1px solid #000;
+            padding-left: 1rem;
+            position: absolute;
+            left: 50px;
+            top: 0;
+            line-height: 1.1;
+            pointer-events: none;
+        }
+
+        .form-container {
+            height: 80%;
+            width: 90%;
+            max-width: 100%;
+            border-radius: 20px;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .form-inner {
+            width: 100%;
+            max-width: 100%;
+            text-align: center;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            min-height: 80vh;
+        }
+
+        @media (min-width: 768px){
+            .form-inner{
+                justify-content: center; 
+            }
+        }
+
+        .question-label {
+            font-size: 2rem;
+            color: #222;
+            text-shadow: -5px 5px 15px #00000029;
+            margin-bottom: 30px;
+            width: 100%;
+            font-family: 'Stratum-bold';
+            font-weight: 800;
+        }
+
+        @media (min-width: 992px){
+            .question-label{
+                width: 60%;
+            }
+        }
+
+        form#questionForm {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position:relative;
+        }
+
+        fieldset.text-box {
+            width: 100%;
+            border: 0;
+            margin: 0;
+            padding: 0;
+        }
+        .email-glow-wrap, .email-glow-wrap:hover{
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 50px;
+            padding: 2px;
+            background: transparent;
+            transition: all 0.3s ease;
+        }
+
+        .email-glow-wrap:focus-within, .email-glow-wrap:hover {
+            position: relative;
+            background: #d73f09;
+            background-size: 300% 300%;
+            animation: moveGradient 4s ease infinite;
+        }
+
+        .email-glow-wrap input {
+            width: 100%;
+            max-width: 600px;
+            width: 600px;
+            padding: 15px 20px;
+            border-radius: 50px;
+            border: none;
+            outline: none;
+            background: #fff;
+            font-size: 1rem;
+            font-family: "Stratum", sans-serif;
+        }
+
+        .email-glow-wrap select {
+            max-width: 600px;
+            width: 600px;
+            padding: 15px 44px 15px 20px;
+            border-radius: 50px;
+            border: none;
+            outline: none;
+            background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%23333' stroke-width='2'/%3E%3C/svg%3E") no-repeat right 20px center;
+            -webkit-appearance: none;
+            appearance: none;
+            font-size: 1rem;
+            font-family: "Stratum", sans-serif;
+            color: #222;
+            cursor: pointer;
+        }
+
+        .email-glow-wrap:focus-within select {
+            box-shadow: var(--shadow-inset);
+        }
+
+        .email-glow-wrap input[type="date"] {
+            color: #222;
+        }
+
+        /* Contact info fields (follow-up question) */
+        .contact-fields {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .contact-field {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Two equal-width fields side by side, same overall width as a full-width field */
+        .field-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            width: 604px;              /* 600px input + 2px glow padding on each side */
+            max-width: 100%;
+            align-items: start;
+        }
+
+        .field-row .contact-field {
+            align-items: stretch;
+            min-width: 0;
+        }
+
+        .contact-fields .email-glow-wrap input,
+        .contact-fields .email-glow-wrap select {
+            height: 50px;
+            padding-top: 0;
+            padding-bottom: 0;
+        }
+
+        .field-row .email-glow-wrap {
+            display: flex;
+            width: 100%;
+        }
+
+        .field-row .email-glow-wrap input,
+        .field-row .email-glow-wrap select {
+            width: 100%;
+            max-width: 100%;
+            min-width: 0;
+        }
+
+        @media (max-width: 625px) {
+            .field-row {
+                grid-template-columns: 1fr;
+                width: 400px;
+            }
+        }
+
+        .field-label {
+            align-self: flex-start;
+            padding-left: 20px;
+            margin-bottom: 6px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #333;
+            text-align: left;
+        }
+
+        .field-error {
+            display: none;
+            align-self: flex-start;
+            padding-left: 20px;
+            margin-top: 6px;
+            color: #d73f09;
+            font-size: 0.9rem;
+            text-align: left;
+        }
+
+        .field-error.show {
+            display: block;
+        }
+
+        .email-glow-wrap::placeholder {
+            font-size: 1rem;
+            color: #999;
+        }
+
+        .email-glow-wrap:focus-within input{
+            box-shadow: var(--shadow-inset);
+        }
+
+        .email-glow-wrap:focus-within::after, .email-glow-wrap:hover::after{
+            content: "";
+            position: absolute;
+            inset: -5px;
+            border-radius: inherit;
+            filter: blur(10px);
+            z-index: -1;
+            animation: moveGradient 6s ease infinite;
+            background-size: 300% 300%;
+        }
+
+
+        /* Neumorphic radio group */
+        .radio-group {
+            width: 100%;
+            max-width: 100%;
+            display: flex;
+            flex-direction: row;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            padding: 14px 18px;
+            border-radius: 5px;
+            border: 2px solid #00000017;
+            background: #f6f6f6;
+            box-shadow: var(--shadow-soft);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: left;
+            min-width: 100px;
+            justify-content: center;
+            height: 200px;
+            width: 200px;
+            flex-direction: column;
+        }
+
+        .radio-option:hover{
+            border: 0;
+        }
+
+        .radio-option input[type="radio"] {
+            display: none;
+        }
+
+        .radio-bullet {
+            width: 0;
+            height: 0;
+            border-radius: 999px;
+            flex-shrink: 0;
+            position: relative;
+        }
+
+        .radio-bullet::after {
+            content: "";
+            position: absolute;
+            inset: 3px;
+            border-radius: inherit;
+            background: transparent;
+            transition: background 0.2s ease;
+        }
+
+        .radio-label-text {
+            font-size: 0.98rem;
+            color: #222;
+            margin-top: 1rem;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .radio-option.selected {
+            background: #ffffff;
+            box-shadow: var(--shadow-inset);
+        }
+
+        .radio-option.selected .radio-bullet {
+            border-color: #d73f09;
+        }
+
+        .radio-option.selected .radio-bullet::after {
+            background: #d73f09;
+        }
+
+        #closeModal{
+            height: 50px;
+        }
+
+        .button {
+        cursor: pointer;
+        font-weight: 700;
+        transition: all 0.2s;
+        border-radius: 100px;
+        background: #333;
+        color:white;
+        border: 1px solid transparent;
+        display: flex;
+        align-items: center;
+        font-size: 15px;
+        justify-content: center;
+        width: 150px;
+        }
+
+        .email-button{
+            cursor: pointer;
+            font-weight: 700;
+            transition: all 0.2s;
+            border-radius: 100px;
+            background: #333;
+            color: white;
+            border: 1px solid transparent;
+            display: flex;
+            align-items: center;
+            font-size: 15px;
+            justify-content: center;
+
+            position: absolute;
+            top: 8px;
+            right: 8px;
+        }
+
+        .button:hover {
+        background: #d73f09;
+        }
+
+        .button > svg {
+        width: 34px;
+        margin-left: 10px;
+        transition: transform 0.3s ease-in-out;
+        }
+
+        .button:hover svg {
+        transform: translateX(5px);
+        }
+
+        .button:active {
+        transform: scale(0.95);
+        }
+
+        #noThanksBtn, #emailBackBtn{
+        background-color: #d3d3d3 !important;
+        color: #333 !important;
+        }
+
+        /* YOU WIN state */
+        #youWin {
+            display: none;
+        }
+
+        #youWin.show {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 10;
+        }
+
+        .win-title {
+            font-size: 4rem;
+            font-weight: 800;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--orange);
+            text-shadow: 0 8px 15px rgba(0, 0, 0, 0.15);
+            z-index: 10;
+        }
+
+        .win-subtitle {
+            font-size: 1.1rem;
+            color: #444;
+            max-width: 480px;
+            z-index: 999;
+        }
+
+        .hide {
+            display: none !important;
+        }
+
+        /* Confetti canvas */
+        #confettiCanvas {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Spinner wheel 2 */
+        #spinnerWheel2 {
+            position: absolute;
+            inset: 0;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            margin-top: 75px;
+        }
+
+        #spinnerWheel2.show {
+            display: flex;
+        }
+
+        .wheel-wrapper {
+            position: relative;
+            width: 600px;
+            height: 600px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 50%;
+            overflow: hidden;
+        }
+
+        .spin-button {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            background: #fff;
+            border-radius: 50% 0 50% 50%;
+            rotate: 315deg;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-transform: uppercase;
+            font-weight: 800;
+            font-size: 2rem;
+            color: #333;
+            border: 5px solid #333;
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.3s;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            z-index: 999;
+        }
+
+        .spin-button p{
+            rotate: 45deg;
+        }
+
+        .spin-button:hover:not(.spinning) {
+            transform: scale(1.1);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .spin-button:active:not(.spinning) {
+            transform: scale(0.95);
+        }
+
+        .spin-button.spinning {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+   /*     .spin-button::before {
+            content: '';
+            position: absolute;
+            top: -35px;
+            width: 25px;
+            height: 35px;
+            background: #333;
+            clip-path: polygon(50% 0%, 15% 100%, 85% 100%);
+        }*/
+
+        .wheel {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            overflow: hidden;
+            transition: transform 5s cubic-bezier(0.17, 0.67, 0.12, 0.99);
+        }
+
+        /* The wheel is drawn as SVG from the prize list (see renderWheel) */
+        .wheel-svg {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        .wheel-label {
+            fill: #fff;
+            font-family: Arial, Helvetica, sans-serif;
+            font-weight: 700;
+        }
+
+        .wheel-slice {
+            stroke: #fff;
+            stroke-width: 2;
+        }
+
+        .spin-button.disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        /* -------------------------------
+           ADMIN PANEL
+        --------------------------------*/
+        #homeLogo {
+            -webkit-user-select: none;
+            user-select: none;
+            -webkit-touch-callout: none;
+        }
+
+        .admin-backdrop {
+            z-index: 2000;
+        }
+
+        .admin-panel {
+            background: #fff;
+            border-radius: 20px;
+            padding: 32px 40px;
+            width: min(720px, 94vw);
+            max-height: 90vh;
+            overflow-y: auto;
+            text-align: left;
+            animation: popIn 0.3s ease;
+        }
+
+        .admin-panel h2 {
+            margin: 0 0 6px;
+            font-family: 'Stratum-bold', Arial, sans-serif;
+        }
+
+        .admin-hint {
+            margin: 0 0 18px;
+            color: #666;
+            font-size: 0.95rem;
+        }
+
+        .admin-input {
+            width: 100%;
+            padding: 10px 14px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-family: inherit;
+            outline: none;
+        }
+
+        .admin-input:focus {
+            border-color: var(--orange);
+        }
+
+        .admin-qty {
+            width: 90px;
+        }
+
+        .admin-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 18px;
+        }
+
+        .admin-table th {
+            text-align: left;
+            font-size: 0.85rem;
+            color: #666;
+            font-weight: 600;
+            padding: 0 8px 8px;
+            border-bottom: 2px solid #eee;
+        }
+
+        .admin-table td {
+            padding: 8px;
+            border-bottom: 1px solid #eee;
+            vertical-align: middle;
+        }
+
+        .admin-table tr.out .admin-input {
+            color: #999;
+        }
+
+        .admin-given {
+            color: #444;
+            text-align: center;
+        }
+
+        .admin-out-tag {
+            display: block;
+            font-size: 0.75rem;
+            color: var(--orange);
+            font-weight: 700;
+            margin-top: 2px;
+        }
+
+        .admin-empty {
+            color: #666;
+            text-align: center;
+            padding: 20px 0 !important;
+        }
+
+        .admin-remove {
+            border: 0;
+            background: #eee;
+            color: #333;
+            border-radius: 100px;
+            padding: 8px 14px;
+            cursor: pointer;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .admin-remove.armed {
+            background: var(--orange);
+            color: #fff;
+        }
+
+        .admin-add {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 18px;
+        }
+
+        .admin-add .button,
+        .admin-row-buttons .button {
+            height: 44px;
+            flex-shrink: 0;
+        }
+
+        .admin-section-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #666;
+            margin: 0 0 8px;
+        }
+
+        .admin-pin {
+            margin-bottom: 18px;
+            color: #444;
+        }
+
+        .admin-pin summary {
+            cursor: pointer;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .admin-row-buttons {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .admin-status {
+            min-height: 1.2em;
+            margin: 0 0 12px;
+            font-size: 0.9rem;
+            color: #4A773C;
+        }
+
+        .admin-status.error {
+            color: var(--orange);
+        }
+
+        #adminLoginView .admin-input {
+            margin-bottom: 6px;
+        }
+
+        #adminLoginView .field-error {
+            padding-left: 0;
+            margin-bottom: 10px;
+        }
+
+        .button-grey {
+            background-color: #d3d3d3 !important;
+            color: #333 !important;
+        }
+
+        .admin-close-app {
+            margin-left: auto;
+            width: auto;
+            padding: 0 22px;
+            height: 44px;
+        }
+
+        .admin-close-app.armed {
+            background-color: var(--orange) !important;
+            color: #fff !important;
+        }
+
+        /* Modal */
+        .modal-backdrop {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-backdrop.active {
+            display: flex;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background: white;
+            padding: 40px 50px;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 450px;
+            animation: popIn 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.5); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .prize-display {
+            font-size: 72px;
+            font-weight: 700;
+            color: var(--orange);
+            margin: 20px 0;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.1);
+        }
+
+        .modal-buttons {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .modal-btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .modal-btn.primary {
+            background: var(--orange);
+            color: white;
+        }
+
+        .modal-btn.primary:hover {
+            background: white;
+            color: #000;
+            border: 1px solid #000;
+            transform: translateY(-2px);
+        }
+
+        /* Responsive tweaks */
+        @media (max-width: 768px) {
+            .form-container {
+                width: 94%;
+                height: auto;
+                padding: 30px 20px;
+                margin-top:50px;
+            }
+
+            .form-inner {
+                max-width: 100%;
+            }
+
+          /*  .glow-wrap input,*/
+            .radio-group {
+                max-width: 100%;
+            }
+
+            .wheel-wrapper{
+                top:300px;
+            }
+        }
+
+        #backButton {
+            border: 0;
+            background-color: #ffffff00;
+            font-size: 1rem;
+            color: #33333359;
+            cursor: pointer;
+            font-family: "Stratum", sans-serif;
+            font-weight: 100;
+            margin-right: auto;
+        }
+
+        .arrow-btn {
+            position: absolute;
+            right: 8px;
+            top: 8px;
+            padding: 7px 10px;
+            background: var(--orange);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 1.25rem;
+            cursor: pointer;
+            box-shadow: var(--shadow-soft);
+            transition: 0.2s;
+        }
+
+        .arrow-btn:hover {
+            background: #ff8a00;
+            transform: scale(1.05);
+        }
+
+        .transition-wrapper {
+            transition: transform 0.35s ease, opacity 0.35s ease;
+            transform-origin: center center;
+        }
+
+        .shrink-out {
+            transform: scale(0.85);
+            opacity: 0;
+        }
+
+        .grow-in {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        .pre-grow {
+            transform: scale(0.85);
+            opacity: 0;
+        }
+
+        #emailField{
+            position: relative;
+        }
+
+        @media (max-width: 625px) {
+            .email-glow-wrap{
+                width: 400px;
+            }
+        }
+
+        .buttons-flex{
+            display:flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .radio-icon{
+            width: 100px;
+            flex-basis: 100%;
+            max-height: 100px;
+            object-fit: contain;
+        }
+
+        .top-nav{
+            width: 100%;
+            height:100px;
+            background-color: #d73f09;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .top-nav img{    
+            height: 80px;
+            max-height: 80px;
+            padding-left: 20px;
+        }
+
+        .sr-only {
+            position: absolute !important;
+            width: 1px !important;
+            height: 1px !important;
+            padding: 0 !important;
+            margin: -1px !important;
+            overflow: hidden !important;
+            clip: rect(0, 0, 0, 0) !important;
+            white-space: nowrap !important;
+            border: 0 !important;
+        }
+
+        .checkbox-tile{
+            cursor: pointer;
+        }
+
+        .checkbox-tile img{
+            height: 300px;
+            width: auto;
+        }
+
+        .form-inner.tall-content {
+            justify-content: flex-start;   /* disable centering */
+            padding-top: 80px;             /* pushes grid down below back button */
+        }
+
+        #submitButton{
+            margin-top: 20px;
+            margin-bottom: 100px;
+        }
+        
+        .checkbox-tile input[type="checkbox"]{
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .checkbox-tile {
+            position: relative;
+            padding: 2px;
+        }
+        .checkbox-tile.selected .checkbox-checkmark {
+            background: #d73f09;
+            box-shadow: 0 0 12px rgba(215, 63, 9, 0.55);
+            color: white;
+        }
+
+        /* Outer gradient glow ON SELECT */
+        .checkbox-tile.selected img {
+            border: 4px solid #d73f09;
+            box-shadow: 0 0 12px rgba(215, 63, 9, 0.55);
+        }
+
+        .checkbox-tile:hover img{
+            box-shadow: 0 0 12px rgba(215, 63, 9, 0.55);
+        }
+        /* Hide the native checkbox */
+        .checkbox-tile input[type="checkbox"] {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .checkbox-checkmark {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: transparent;
+            font-size: 22px;
+            font-weight: 900;
+            transition: all 0.25s ease;
+            position: absolute;
+            top: -10px;
+            right: -10px;
+        }
+
+        .radio-glow.glow-active .radio-option, .radio-glow:hover .radio-option{
+            border: 2px solid #d73f09;
+            border-radius: 5px;
+            
+        }
+    </style>
+</head>
+<body>
+    <div class="top-nav"><img src="windows/wwwroot/assets/images/logo.png" id="homeLogo" draggable="false" style="cursor:pointer;"></div>
+    <button type="button"id="backButton">&#8617; Back to previous question</button>
+    <!-- Confetti -->
+    <canvas id="confettiCanvas"></canvas>
+
+    <!-- Main container -->
+    <div class="form-container">
+        <div class="form-inner">
+            <!-- Question form (Round 1 + Round 2) -->
+            <div id="transitionWrapper" class="transition-wrapper">
+                <form id="questionForm">
+                    <div class="question-label" id="questionLabel"></div>
+                    <div id="radioContainer" class="radio-group hide"></div>
+                    <div id="emailField" class="hide">
+                        <div class="contact-fields">
+
+                            <div class="field-row">
+                                <div class="contact-field">
+                                    <label class="field-label" for="firstNameInput">First name / preferred name</label>
+                                    <div class="email-glow-wrap">
+                                        <input type="text" id="firstNameInput" autocomplete="given-name" aria-required="true" placeholder="First/Preferred Name">
+                                    </div>
+                                    <div class="field-error" id="firstNameError">This field is required.</div>
+                                </div>
+                                <div class="contact-field">
+                                    <label class="field-label" for="lastNameInput">Last name</label>
+                                    <div class="email-glow-wrap">
+                                        <input type="text" id="lastNameInput" autocomplete="family-name" aria-required="true" placeholder="Last Name">
+                                    </div>
+                                    <div class="field-error" id="lastNameError">This field is required.</div>
+                                </div>
+                            </div>
+
+                            <div class="contact-field">
+                                <label class="field-label" for="emailInput">Email</label>
+                                <div class="email-glow-wrap">
+                                    <input type="email" id="emailInput" autocomplete="email" aria-required="true" placeholder="Email">
+                                </div>
+                                <div class="field-error" id="emailError">This field is required.</div>
+                            </div>
+
+                            <div class="field-row">
+                                <div class="contact-field">
+                                    <label class="field-label" for="dobInput">Date of birth</label>
+                                    <div class="email-glow-wrap">
+                                        <input type="date" id="dobInput" autocomplete="bday" aria-required="true">
+                                    </div>
+                                    <div class="field-error" id="dobError">This field is required.</div>
+                                </div>
+                                <div class="contact-field">
+                                    <label class="field-label" for="gradEntrySelect">Planned grad school entry</label>
+                                    <div class="email-glow-wrap">
+                                        <select id="gradEntrySelect">
+                                            <option value="">Select a term</option>
+                                            <option value="Fall 2027">Fall 2027</option>
+                                            <option value="Fall 2028">Fall 2028</option>
+                                            <option value="Fall 2029">Fall 2029</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="contact-field">
+                                <label class="field-label" for="programInput">Academic program</label>
+                                <div class="email-glow-wrap">
+                                    <input type="text" id="programInput" placeholder="e.g. Ocean, Earth, and Atmospheric Sciences">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="buttons-flex" style="margin-top: 20px;">
+                            <button id="emailSubmitBtn" type="button" class="button">
+                                <div class="wrap"><p>Submit</p></div>
+                            </button>
+                            <button id="emailBackBtn" type="button" class="button">
+                                <div class="wrap"><p>Back</p></div>
+                            </button>
+                        </div>
+                    </div>
+
+                    <fieldset class="text-box">
+                        <div class="glow-wrap" id="glowWrap">
+                            <input type="text" id="questionInput" placeholder="Name">
+                        </div>
+                    </fieldset>
+
+                    <button class="button" id="submitButton" type="submit">
+                        <div class="wrap">
+                            <p>Next</p>
+                        </div>
+                    </button>
+                </form>
+            </div>
+            <!-- YOU WIN state (after Round 1) -->
+            <div id="youWin">
+                <div class="win-title">YOU WIN!</div>
+                <p class="win-subtitle">
+                    Thanks for visiting the Oregon State University booth.
+                    Tap below to continue to Round 2 and spin for more fun.
+                </p>
+                <div class="buttons-flex">
+                    <button class="button" id="noThanksBtn">
+                        <div class="wrap">
+                            <p>Close</p>
+                        </div>
+                    </button>
+
+                    <button class="button" id="goToRound2">
+                            <p style="display: flex; align-items: center; gap: 10px; padding: 0;
+                                margin: 0;"><span>Continue</span>  <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 74 74"
+                                height="35"
+                                width="35"
+                            >
+                                <circle stroke-width="3" stroke="white" r="35.5" cy="37" cx="37"></circle>
+                                <path
+                                fill="white"
+                                d="M25 35.5C24.1716 35.5 23.5 36.1716 23.5 37C23.5 37.8284 24.1716 38.5 25 38.5V35.5ZM49.0607 38.0607C49.6464 37.4749 49.6464 36.5251 49.0607 35.9393L39.5147 26.3934C38.9289 25.8076 37.9792 25.8076 37.3934 26.3934C36.8076 26.9792 36.8076 27.9289 37.3934 28.5147L45.8787 37L37.3934 45.4853C36.8076 46.0711 36.8076 47.0208 37.3934 47.6066C37.9792 48.1924 38.9289 48.1924 39.5147 47.6066L49.0607 38.0607ZM25 38.5L48 38.5V35.5L25 35.5V38.5Z"
+                                ></path>
+                            </svg></p>
+                    </button> 
+                </div>
+            </div>
+
+            <!-- Spinner Wheel for Round 2 -->
+            <div id="spinnerWheel2">
+                <div class="wheel-wrapper">
+                    <div class="spin-button" id="spinBtn2"><p>SPIN</p></div>
+                    <!-- Slices are drawn by renderWheel() from the prize list -->
+                    <div class="wheel" id="wheelElement2"></div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Prize modal (Round 2) -->
+    <div class="modal-backdrop" id="prizeModal">
+        <div class="modal-content">
+            <h2 id="prizeTitle">Congratulations!</h2>
+            <div class="prize-display" id="prizeValue">1</div>
+            <p id="prizeMessage">You've won a <strong id="prizeLabel">1 prize</strong>!</p>
+            <div class="modal-buttons">
+                <button class="button" id="closeModal">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin panel: hold the logo for 3 seconds, or press Ctrl+Shift+A -->
+    <div class="modal-backdrop admin-backdrop" id="adminModal">
+        <div class="admin-panel">
+            <div id="adminLoginView">
+                <h2>Booth admin</h2>
+                <p class="admin-hint">Enter the admin PIN to manage the prize wheel.</p>
+                <input type="password" id="adminPinInput" class="admin-input" inputmode="numeric" autocomplete="off" placeholder="PIN">
+                <div class="field-error" id="adminPinError">Incorrect PIN.</div>
+                <div class="admin-row-buttons">
+                    <button type="button" class="button" id="adminLoginBtn">Unlock</button>
+                    <button type="button" class="button button-grey" id="adminCancelBtn">Cancel</button>
+                </div>
+            </div>
+
+            <div id="adminPrizesView" class="hide">
+                <h2>Prize wheel</h2>
+                <p class="admin-hint">
+                    Each prize with at least 1 left gets a slice on the wheel. When a prize reaches 0
+                    it disappears from the wheel automatically. Changes save as soon as you leave a field.
+                </p>
+
+                <table class="admin-table">
+                    <thead>
+                        <tr><th>Prize</th><th>Left</th><th>Given away</th><th></th></tr>
+                    </thead>
+                    <tbody id="adminPrizeRows"></tbody>
+                </table>
+
+                <p class="admin-section-title">Add a prize</p>
+                <form id="addPrizeForm" class="admin-add">
+                    <input id="newPrizeName" class="admin-input" type="text" maxlength="40" placeholder="Prize name" autocomplete="off">
+                    <input id="newPrizeQty" class="admin-input admin-qty" type="number" min="0" value="10" aria-label="How many">
+                    <button type="submit" class="button">Add</button>
+                </form>
+
+                <details class="admin-pin">
+                    <summary>Change admin PIN</summary>
+                    <div class="admin-row-buttons">
+                        <input type="password" id="newPinInput" class="admin-input" inputmode="numeric" autocomplete="off" placeholder="New PIN (4–8 digits)">
+                        <button type="button" class="button" id="changePinBtn">Save PIN</button>
+                    </div>
+                </details>
+
+                <p class="admin-status" id="adminStatus"></p>
+
+                <div class="admin-row-buttons">
+                    <button type="button" class="button" id="adminDoneBtn">Done</button>
+                    <button type="button" class="button button-grey admin-close-app" id="closeAppBtn">Close app</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="image-attributions sr-only">
+        X by Skena Grafis from <a href="https://thenounproject.com/browse/icons/term/x/" target="_blank" title="X Icons">Noun Project</a> (CC BY 3.0)
+
+        Check Mark by saidatun from <a href="https://thenounproject.com/browse/icons/term/check-mark/" target="_blank" title="Check Mark Icons">Noun Project</a> (CC BY 3.0)
+
+        Happy by Barracuda from <a href="https://thenounproject.com/browse/icons/term/happy/" target="_blank" title="Happy Icons">Noun Project</a> (CC BY 3.0)
+
+        Smile by Barracuda from <a href="https://thenounproject.com/browse/icons/term/smile/" target="_blank" title="Smile Icons">Noun Project</a> (CC BY 3.0)
+
+        Neutral Face by Barracuda from <a href="https://thenounproject.com/browse/icons/term/neutral-face/" target="_blank" title="Neutral Face Icons">Noun Project</a> (CC BY 3.0)
+
+        book and lightbulb by Rahmad romadoni from <a href="https://thenounproject.com/browse/icons/term/book-and-lightbulb/" target="_blank" title="book and lightbulb Icons">Noun Project</a> (CC BY 3.0)
+
+        Books stack by insdesign86 from <a href="https://thenounproject.com/browse/icons/term/books-stack/" target="_blank" title="Books stack Icons">Noun Project</a> (CC BY 3.0)
+
+        Government Office by Faizal Aji Mualana from <a href="https://thenounproject.com/browse/icons/term/government-office/" target="_blank" title="Government Office Icons">Noun Project</a> (CC BY 3.0)
+
+        Puzzle Piece by ilCactusBlu from <a href="https://thenounproject.com/browse/icons/term/puzzle-piece/" target="_blank" title="Puzzle Piece Icons">Noun Project</a> (CC BY 3.0)
+
+        faculty by WEBTECHOPS LLP from <a href="https://thenounproject.com/browse/icons/term/faculty/" target="_blank" title="faculty Icons">Noun Project</a> (CC BY 3.0)
+
+        Research by Radhika Studio from <a href="https://thenounproject.com/browse/icons/term/research/" target="_blank" title="Research Icons">Noun Project</a> (CC BY 3.0)
+        Prize by agus raharjo from <a href="https://thenounproject.com/browse/icons/term/prize/" target="_blank" title="Prize Icons">Noun Project</a> (CC BY 3.0)
+        sticker by LUTFI GANI AL ACHMAD from <a href="https://thenounproject.com/browse/icons/term/sticker/" target="_blank" title="sticker Icons">Noun Project</a> (CC BY 3.0)
+
+        Research Institute by Mia Elysia from <a href="https://thenounproject.com/browse/icons/term/research-institute/" target="_blank" title="Research Institute Icons">Noun Project</a> (CC BY 3.0)
+        Ship Wheel by Andhika Pramanto from <a href="https://thenounproject.com/browse/icons/term/ship-wheel/" target="_blank" title="Ship Wheel Icons">Noun Project</a> (CC BY 3.0)
+        people by karina from <a href="https://thenounproject.com/browse/icons/term/people/" target="_blank" title="people Icons">Noun Project</a> (CC BY 3.0)
+    </div>
+
+    <script>
+
+        document.getElementById("homeLogo").addEventListener("click", () => {
+        // A long press opened the admin panel; don't also reset the survey
+        if (logoHeld) { logoHeld = false; return; }
+
+        // Close modal if open
+        document.getElementById("prizeModal").classList.remove("active");
+
+        // Stop any confetti
+        stopConfetti();
+
+        // Reset everything
+        resetAll();
+
+        // Make absolutely sure UI is showing the form
+        questionForm.classList.remove("hide");
+        youWinBlock.classList.remove("show");
+        spinnerWheel2.classList.remove("show");
+
+        // Optional: scroll to the top if needed
+        window.scrollTo(0, 0);
+    });
+
+        /* -------------------------------
+           QUESTION / ROUND LOGIC
+        --------------------------------*/
+        let round = 1;
+        let isTransitioning = false;
+
+        const round1Questions = [
+            { label: "Which of the following best describes your role?", options:[
+                "OSU Faculty",
+                "University Faculty",
+                "Undergraduate Student",
+                "Graduate Student",
+                "Government Office",
+                "Other"
+            ] },
+            {
+                label: "Did your experience at this booth improve your impression of Oregon State University and its research?",
+                options: [
+                    "Neutral, no change of impression",
+                    "Yes, somewhat improved",
+                    "Yes, much improved"
+                ]
+            }
+        ];
+
+        const round2Questions = [
+            {
+                label: "What brought you to the booth?",
+                options: [
+                    "Cool Swag",
+                    "Interest in Oregon State University",
+                    "Interest in Researchers",
+                    "Interest in Research Institutes and Centers",
+                    "R/V Taani Simulator"
+                ]
+            },
+
+            {
+                label: "Which OSU research centers and institutes did you know about prior to visiting AGU? Please select all that apply.",
+                options: [
+                    "Advanced Technology and Manufacturing Institute",
+                    "Center for Oldest Ice Exploration",
+                    "Center for Quantitative Life Sciences",
+                    "Collaborative Robotics and Intelligent Systems Institute",
+                    "Cooperative Institute for Marine Ecosystem and Resources Studies",                
+                    "Food Innovation Center",
+                    "Hatfield Marine Science Center",
+                    "Ice Core and Quaternary Geochemistry Lab",
+                    "Institute for Water and Watersheds",
+                    "Linus Pauling Institute",
+                    "OH Hinsdale Wave Research Laboratory",
+                    "Oregon Agricultural Experiment Station",
+                    "Oregon Sea Grant",
+                    "PacWave",
+                    "Pacific Marine Energy Center",
+                    "Radiation Center",
+                    "Regional Class Research Vessels",
+                    "STEM Research Center",
+                    "Superfund Research Center"
+                ],
+                isCheckbox: true
+            },
+
+            {
+                label: "Would you be willing to share your experience in more detail after the conference?",
+                options: ["Yes", "No"],
+                isEmailConditional: true
+            },
+        ];
+
+        let questions = round1Questions;
+        let qIndex = 0;
+
+        const answers = {
+            role: "", experience: "", brought: "", centers: [], followUp: "",
+            firstName: "", lastName: "", dob: "", email: "", gradEntry: "", program: ""
+        };
+        let lastPrize = "";
+
+        function resetAnswers() {
+            answers.role = "";
+            answers.experience = "";
+            answers.brought = "";
+            answers.centers = [];
+            answers.followUp = "";
+            answers.firstName = "";
+            answers.lastName = "";
+            answers.dob = "";
+            answers.email = "";
+            answers.gradEntry = "";
+            answers.program = "";
+        }
+
+        /* -------------------------------
+           CONTACT INFO FIELDS
+        --------------------------------*/
+        const contactInputs = {
+            firstName: document.getElementById("firstNameInput"),
+            lastName:  document.getElementById("lastNameInput"),
+            dob:       document.getElementById("dobInput"),
+            email:     document.getElementById("emailInput"),
+            gradEntry: document.getElementById("gradEntrySelect"),
+            program:   document.getElementById("programInput")
+        };
+
+        const contactErrors = {
+            firstName: document.getElementById("firstNameError"),
+            lastName:  document.getElementById("lastNameError"),
+            dob:       document.getElementById("dobError"),
+            email:     document.getElementById("emailError")
+        };
+
+        function todayISO() {
+            const d = new Date();
+            const mm = String(d.getMonth() + 1).padStart(2, "0");
+            const dd = String(d.getDate()).padStart(2, "0");
+            return `${d.getFullYear()}-${mm}-${dd}`;
+        }
+
+        // Don't allow future birth dates in the date picker
+        contactInputs.dob.max = todayISO();
+        contactInputs.dob.min = "1900-01-01";
+
+        function setFieldError(key, show) {
+            contactErrors[key].classList.toggle("show", show);
+            contactInputs[key].style.boxShadow = show ? "0 0 0 3px rgba(215,63,9,0.4)" : "";
+        }
+
+        function clearContactFields() {
+            Object.values(contactInputs).forEach(el => {
+                el.value = "";
+                el.style.boxShadow = "";
+            });
+            Object.values(contactErrors).forEach(el => el.classList.remove("show"));
+        }
+
+        // Validates required fields, shows errors, and returns the values (or null if invalid)
+        function validateContactFields() {
+            const values = {
+                firstName: contactInputs.firstName.value.trim(),
+                lastName:  contactInputs.lastName.value.trim(),
+                dob:       contactInputs.dob.value,          // YYYY-MM-DD
+                email:     contactInputs.email.value.trim(),
+                gradEntry: contactInputs.gradEntry.value,
+                program:   contactInputs.program.value.trim()
+            };
+
+            const checks = {
+                firstName: !!values.firstName,
+                lastName:  !!values.lastName,
+                dob:       /^\d{4}-\d{2}-\d{2}$/.test(values.dob) &&
+                           values.dob >= "1900-01-01" && values.dob <= todayISO(),
+                email:     /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email)
+            };
+
+            let firstInvalid = null;
+            Object.keys(checks).forEach(key => {
+                setFieldError(key, !checks[key]);
+                if (!checks[key] && !firstInvalid) firstInvalid = contactInputs[key];
+            });
+
+            if (firstInvalid) {
+                firstInvalid.focus();
+                return null;
+            }
+            return values;
+        }
+
+        const questionLabel = document.getElementById("questionLabel");
+        const questionInput = document.getElementById("questionInput");
+        const questionForm = document.getElementById("questionForm");
+        const radioContainer = document.getElementById("radioContainer");
+        const youWinBlock = document.getElementById("youWin");
+        const formInner = document.querySelector(".form-inner");
+        const spinnerWheel2 = document.getElementById("spinnerWheel2");
+        const submitButton = document.getElementById("submitButton");
+        let history = [];
+        const backButton = document.getElementById("backButton");
+
+        const transitionWrapper = document.getElementById("transitionWrapper");
+
+        function animateOut(callback) {
+            isTransitioning = true;
+
+            transitionWrapper.classList.add("shrink-out");
+
+            setTimeout(() => {
+                if (callback) callback();
+
+                transitionWrapper.classList.remove("shrink-out");
+
+                transitionWrapper.classList.add("pre-grow");
+                requestAnimationFrame(() => {
+                    transitionWrapper.classList.remove("pre-grow");
+                    isTransitioning = false;   
+                });
+            }, 300);
+        }
+
+        function animateIn() {
+            transitionWrapper.classList.add("pre-grow");
+
+            requestAnimationFrame(() => {
+                transitionWrapper.classList.remove("pre-grow");
+            });
+        }
+
+        // ------------------------------
+        // BACK BUTTON LOGIC
+        // ------------------------------
+        function updateBackButton() {
+
+            // Email screen NEVER shows back button
+            if (!document.getElementById("emailField").classList.contains("hide")) {
+                backButton.classList.add("hide");
+                return;
+            }
+
+            // Round 1 logic
+            if (round === 1) {
+                if (qIndex > 0) backButton.classList.remove("hide");
+                else backButton.classList.add("hide");
+                return;
+            }
+
+            // Round 2 logic
+            if (round === 2) {
+                if (qIndex === 0) backButton.classList.add("hide");  // First question of round 2
+                else backButton.classList.remove("hide");
+                return;
+            }
+        }
+
+        function loadQuestion() {
+            animateIn();
+            updateBackButton();
+            const q = questions[qIndex];
+            questionLabel.textContent = q.label;
+
+            // Reset UI
+            radioContainer.innerHTML = "";
+            radioContainer.classList.remove("hide");
+            radioContainer.classList.remove("checkbox-grid");
+            formInner.classList.remove("tall-content");
+            document.getElementById("emailField").classList.add("hide");
+            clearContactFields();
+            // Always hide elements by default
+            submitButton.classList.add("hide");
+            document.getElementById("glowWrap").classList.add("hide");
+            document.getElementById("emailField").classList.add("hide");
+            radioContainer.classList.remove("hide");
+
+            questionInput.value = "";
+            questionInput.placeholder = "";
+
+            /* -----------------------------------
+            CHECKBOX QUESTION (grid tiles)
+            ----------------------------------- */
+            if (q.isCheckbox) {
+                radioContainer.classList.add("checkbox-grid");
+                formInner.classList.add("tall-content");
+                submitButton.classList.remove("hide"); // checkboxes NEED a submit button
+                q.options.forEach((opt, idx) => {
+                    const clean = opt.toLowerCase().replace(/,/g, "").replace(/ /g, "-");
+                    const id = `chk-${idx}`;
+
+                    const tile = document.createElement("div");
+                    tile.className = "checkbox-tile";
+                    tile.setAttribute("data-label", opt);
+
+                    tile.innerHTML = `
+                        <img src="windows/wwwroot/assets/images/${clean}.png" alt="${opt}">
+                        <input type="checkbox" id="${id}" value="${opt}">
+                        <div class="checkbox-checkmark">✓</div>
+                    `;
+
+                    tile.addEventListener("click", () => {
+                        const input = tile.querySelector("input");
+                        input.checked = !input.checked;
+                        tile.classList.toggle("selected", input.checked);
+                    });
+
+                    radioContainer.appendChild(tile);
+                });
+
+                return; // ⬅ We're done for checkbox questions
+            }
+
+            /* -----------------------------------
+            RADIO QUESTION (Round 1 + Round 2)
+            ----------------------------------- */
+            if (q.options) {
+                q.options.forEach((opt, idx) => {
+                    const clean = opt.toLowerCase().replace(/\//g, "").replace(/,/g, "").replace(/ /g, "-");
+                    const id = `rad-${idx}`;
+                    submitButton.classList.add("hide"); // radios never show the submit button
+
+                    const wrapper = document.createElement("label");
+                    wrapper.innerHTML = `
+                        <div class="glow-wrap radio-glow">
+                            <div class="radio-option">
+                                <span class="radio-bullet"></span>
+                                <img class="radio-icon" src="windows/wwwroot/assets/images/${clean}.png" alt="${opt}">
+                                <span class="radio-label-text">${opt}</span>
+                                <input type="radio" name="roundOpt" value="${opt}" id="${id}">
+                            </div>
+                        </div>
+                    `;
+
+                    wrapper.addEventListener("click", () => {
+                        if (isTransitioning) return;
+
+                        radioContainer.querySelectorAll(".radio-option").forEach(el => {
+                            el.classList.remove("selected");
+                            el.parentElement.classList.remove("glow-active");
+                        });
+
+                        const option = wrapper.querySelector(".radio-option");
+                        const wrap = wrapper.querySelector(".glow-wrap");
+                        const input = wrapper.querySelector("input");
+
+                        option.classList.add("selected");
+                        wrap.classList.add("glow-active");
+                        input.checked = true;
+
+                        // Email conditional question logic
+                        if (q.isEmailConditional) {
+                            if (input.value === "Yes") {
+                                radioContainer.classList.add("hide");
+                                document.getElementById("emailField").classList.remove("hide");
+                                contactInputs.firstName.focus();
+                                return;
+                            } else {
+                                document.getElementById("emailField").classList.add("hide");
+                            }
+                        }
+
+                        // Autosubmit after slight delay
+                        setTimeout(() => {
+                            if (!isTransitioning) {
+                                questionForm.dispatchEvent(new Event("submit", { cancelable: true }));
+                            }
+                        }, 150);
+                    });
+
+                    radioContainer.appendChild(wrapper);
+                });
+
+                return; // ⬅ Done for radio-type questions
+            }
+
+            /* -----------------------------------
+            TEXT INPUT QUESTION
+            ----------------------------------- */
+            radioContainer.classList.add("hide");
+            document.getElementById("glowWrap").classList.remove("hide");
+            questionInput.placeholder = q.placeholder || "";
+            questionInput.focus();
+        }
+
+        document.getElementById("emailBackBtn").addEventListener("click", () => {
+            // Hide email field
+            document.getElementById("emailField").classList.add("hide");
+
+            // Show Yes/No options again
+            radioContainer.classList.remove("hide");
+
+            // Clear contact fields
+            clearContactFields();
+
+            // Uncheck the radios so the user has to choose again
+            radioContainer.querySelectorAll("input[type='radio']").forEach(r => r.checked = false);
+
+            // Re-select NOTHING (force user to choose again)
+            radioContainer.querySelectorAll(".radio-option").forEach(opt => {
+                opt.classList.remove("selected");
+                opt.parentElement.classList.remove("glow-active");
+            });
+        });
+
+        questionForm.addEventListener("submit", (e) => {
+            e.preventDefault();
+
+            const q = questions[qIndex];
+            let value;
+
+            // --------------------------
+            // CHECKBOX QUESTION
+            // --------------------------
+            if (q.isCheckbox) {
+                const checkedBoxes = Array.from(
+                    radioContainer.querySelectorAll("input[type='checkbox']:checked")
+                ).map(cb => cb.value);
+
+                value = checkedBoxes; // store array of answers
+            }
+
+            // --------------------------
+            // RADIO QUESTION
+            // --------------------------
+            else if (q.options) {
+                const selected = radioContainer.querySelector("input[type='radio']:checked");
+                if (!selected) return;
+
+                value = selected.value;
+
+                // "Yes" on the follow-up question requires valid contact info
+                // (also catches pressing Enter inside one of the contact fields)
+                if (q.isEmailConditional && value === "Yes") {
+                    const contact = validateContactFields();
+                    if (!contact) return;
+                    Object.assign(answers, contact);
+                }
+            }
+
+            // --------------------------
+            // TEXT QUESTION
+            // --------------------------
+            else {
+                value = questionInput.value.trim();
+                if (!value) return;
+            }
+
+            // Store answers
+            if (round === 1) {
+                if (qIndex === 0) answers.role = value;
+                else answers.experience = value;
+            } else {
+                if (qIndex === 0) answers.brought = value;
+                else if (qIndex === 1) answers.centers = value;
+                else answers.followUp = value;
+            }
+
+            history.push({ qIndex, value });
+            qIndex++;
+
+            if (qIndex < questions.length) {
+                animateOut(() => loadQuestion());
+            } else {
+                if (round === 1) animateOut(showWinScreen);
+                else animateOut(finishedRound2);
+            }
+        });
+
+        document.getElementById("emailSubmitBtn").addEventListener("click", () => {
+            // Validation + saving happens in the submit handler
+            questionForm.dispatchEvent(new Event("submit", { cancelable: true }));
+        });
+
+        // Clear a field's error as soon as the user edits it
+        Object.keys(contactErrors).forEach(key => {
+            ["input", "change"].forEach(evt => {
+                contactInputs[key].addEventListener(evt, () => setFieldError(key, false));
+            });
+        });
+
+            
+        document.getElementById("backButton").addEventListener("click", () => {
+            if (history.length === 0) return; // can't go back
+
+            // Retrieve last answer
+            const last = history.pop();
+
+            // Move qIndex back
+            qIndex = last.qIndex;
+
+            // Load the question again
+            loadQuestion();
+
+            // Restore the previous answer
+            const q = questions[qIndex];
+
+            if (q.options) {
+                const radios = radioContainer.querySelectorAll("input[type='radio']");
+
+                radios.forEach(r => {
+                    if (r.value === last.value) {
+                        r.checked = true;
+
+                        const option = r.closest(".radio-option");
+                        const wrap = r.closest(".glow-wrap");
+                        if (option) option.classList.add("selected");
+                        if (wrap) wrap.classList.add("glow-active");
+
+                        // SPECIAL CASE: Email conditional question
+                        if (q.isEmailConditional) {
+                            if (last.value === "Yes") {
+                                radioContainer.classList.remove("hide");
+                                document.getElementById("emailField").classList.add("hide");
+                            } else {
+                                radioContainer.classList.remove("hide");
+                                document.getElementById("emailField").classList.add("hide");
+                            }
+                        }
+                                    else {
+                            // restore text input
+                            questionInput.value = last.value;
+                        }
+                    }
+                });
+            }
+        });
+
+        function showWinScreen() {
+            // Hide the form, show YOU WIN
+            questionForm.classList.add("hide");
+            youWinBlock.classList.add("show");
+            backButton.classList.add("hide");
+
+            startConfetti();
+        }
+
+        document.getElementById("goToRound2").addEventListener("click", () => {
+            // Move into Round 2
+            stopConfetti();
+            youWinBlock.classList.remove("show");
+            questionForm.classList.remove("hide");
+
+            round = 2;
+            questions = round2Questions;
+            qIndex = 0;
+            backButton.classList.add("hide");
+            history = [];
+            loadQuestion();
+        });
+
+        document.getElementById("noThanksBtn").addEventListener("click", () => {
+            stopConfetti();
+            youWinBlock.classList.remove("show");
+            questionForm.classList.remove("hide");
+
+            // FULL RESET
+            round = 1;
+            questions = round1Questions;
+            qIndex = 0;
+
+            resetAnswers();
+
+            history = [];
+
+            // Reset wheel visuals
+            rotation2 = 0;
+            wheel2.style.transition = "none";
+            wheel2.style.transform = "rotate(0deg)";
+            setTimeout(() => {
+                wheel2.style.transition = "transform 5s cubic-bezier(0.17, 0.67, 0.12, 0.99)";
+            }, 50);
+
+            spinnerWheel2.classList.remove("show");
+
+            loadQuestion();
+        });
+
+        function finishedRound2() {
+            // Hide form UI, show spinner wheel 2
+            backButton.classList.add("hide");
+            questionForm.classList.add("hide");
+            youWinBlock.classList.remove("show");
+            spinnerWheel2.classList.add("show");
+
+            // Nothing left to win: skip the spin and go straight to the thank-you
+            if (wheelPrizes.length === 0) showPrizeModal(null);
+        }
+
+        loadQuestion();
+
+        /* -------------------------------
+           CONFETTI
+        --------------------------------*/
+        const confettiCanvas = document.getElementById("confettiCanvas");
+        const cctx = confettiCanvas.getContext("2d");
+        let confettiPieces = [];
+        let confettiActive = false;
+        let confettiStopTimeout = null;
+
+        function resizeConfetti() {
+            confettiCanvas.width = window.innerWidth;
+            confettiCanvas.height = window.innerHeight;
+        }
+        window.addEventListener("resize", resizeConfetti);
+        resizeConfetti();
+
+        function createConfettiBurst(originX, originY) {
+            if (!originX || !originY) {
+                originX = window.innerWidth / 2;
+                originY = window.innerHeight * 0.45;
+            }
+
+            const colors = ["#d73f09", "#ff8a00", "#f7a162", "#4A773C", "#003B5C"];
+            const total = 550;
+
+            for (let i = 0; i < total; i++) {
+                // VERY wide cone for chaotic look
+                // 360° confetti spread — full explosion
+                const angle = Math.random() * Math.PI * 2;
+
+
+                // More variation in speed
+                const speed = 2 + Math.random() * 60;
+
+                // New randomness properties
+                const wobble = Math.random() * Math.PI * 2;
+                const wobbleSpeed = 0.1 + Math.random() * 0.25;  // each piece wobbles differently
+                const gravity = 0.05 + Math.random() * 0.08;      // each piece falls differently
+                const drag = 0.92 + Math.random() * 0.04;         // some slow down faster
+
+                confettiPieces.push({
+                    x: originX,
+                    y: originY,
+                    vx: Math.cos(angle) * speed,
+                    vy: Math.sin(angle) * speed,
+                    size: 4 + Math.random() * 10,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    rotation: Math.random() * Math.PI * 2,
+                    rotationSpeed: (Math.random() - 0.5) * 0.25,
+
+                    // new chaotic motion properties
+                    wobble,
+                    wobbleSpeed,
+                    gravity,
+                    drag,
+
+                    life: 0,
+                    maxLife: 200 + Math.random() * 60
+                });
+            }
+        }
+
+        function startConfetti(x, y) {
+            confettiActive = true;
+            confettiPieces = [];
+            createConfettiBurst(x, y);
+
+            if (confettiStopTimeout) clearTimeout(confettiStopTimeout);
+            confettiStopTimeout = setTimeout(() => {
+                confettiActive = false;
+                confettiStopTimeout = null;
+            }, 2500);
+
+            requestAnimationFrame(updateConfetti);
+        }
+
+        function stopConfetti() {
+            confettiActive = false;
+            confettiPieces = [];
+            cctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+            if (confettiStopTimeout) {
+                clearTimeout(confettiStopTimeout);
+                confettiStopTimeout = null;
+            }
+        }
+
+        function updateConfetti() {
+            cctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+
+            confettiPieces.forEach(p => {
+                // Apply drag randomness
+                p.vx *= p.drag;
+                p.vy *= p.drag;
+
+                // Apply gravity (each piece has different gravity)
+                p.vy += p.gravity;
+
+                // Wobble left/right so pieces flutter randomly
+                p.wobble += p.wobbleSpeed;
+                p.x += p.vx + Math.cos(p.wobble) * 0.8;
+                p.y += p.vy;
+
+                // Rotation chaos
+                p.rotation += p.rotationSpeed;
+
+                p.rotation += p.rotationSpeed;
+                p.life++;
+
+            });
+
+            confettiPieces = confettiPieces.filter(p =>
+                p.y < confettiCanvas.height + 200
+            );
+
+            confettiPieces.forEach(p => {
+                cctx.save();
+                cctx.translate(p.x, p.y);
+                cctx.rotate(p.rotation);
+                cctx.fillStyle = p.color;
+                cctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.6);
+                cctx.restore();
+            });
+
+            if (confettiActive || confettiPieces.length > 0) {
+                requestAnimationFrame(updateConfetti);
+            }
+        }
+
+        /* -------------------------------
+           SPINNER WHEEL 2 + MODAL
+        --------------------------------*/
+        const wheel2 = document.getElementById("wheelElement2");
+        const spinBtn2 = document.getElementById("spinBtn2");
+        const prizeModal = document.getElementById("prizeModal");
+        let rotation2 = 0;
+        let isSpinning2 = false;
+
+        /* -------------------------------
+           TALKING TO THE C# APP
+           Messages go out with sendToHost({ type: ... }).
+           Replies come back and are routed by their "type" to onHost handlers.
+           Opened in a normal browser (no C# app), a built-in test host
+           stands in so the page can still be tried out.
+        --------------------------------*/
+        const hasHost = !!(window.chrome && window.chrome.webview);
+        const hostHandlers = {};
+
+        function onHost(type, handler) {
+            hostHandlers[type] = handler;
+        }
+
+        function receiveFromHost(msg) {
+            if (msg && hostHandlers[msg.type]) hostHandlers[msg.type](msg);
+        }
+
+        function sendToHost(msg) {
+            if (hasHost) window.chrome.webview.postMessage(msg);
+            else testHost(msg);
+        }
+
+        if (hasHost) {
+            window.chrome.webview.addEventListener("message", e => receiveFromHost(e.data));
+        }
+
+        // Browser-only stand-in for the C# app. Nothing here is saved.
+        const testState = {
+            pin: "1234",
+            nextId: 6,
+            prizes: ["Beach Ball", "Giant Highlighter", "Calendar", "Sticker", "Magnet"]
+                .map((name, i) => ({ id: i + 1, name, remaining: 25, given: 0 }))
+        };
+
+        function testHost(msg) {
+            const reply = m => setTimeout(() => receiveFromHost(m), 0);
+            const sendList = () => reply({ type: "prizes", prizes: testState.prizes.map(p => ({ ...p })) });
+            const find = id => testState.prizes.find(p => p.id === id);
+
+            switch (msg.type) {
+                case "getPrizes":
+                    sendList();
+                    break;
+                case "prizeWon": {
+                    const p = find(msg.id);
+                    if (p && p.remaining > 0) { p.remaining--; p.given++; }
+                    sendList();
+                    break;
+                }
+                case "adminLogin":
+                    reply({ type: "adminLogin", ok: msg.pin === testState.pin });
+                    break;
+                case "savePrize": {
+                    const p = find(msg.id);
+                    if (p) { p.name = msg.name; p.remaining = msg.remaining; }
+                    else testState.prizes.push({ id: testState.nextId++, name: msg.name, remaining: msg.remaining, given: 0 });
+                    sendList();
+                    break;
+                }
+                case "deletePrize":
+                    testState.prizes = testState.prizes.filter(p => p.id !== msg.id);
+                    sendList();
+                    break;
+                case "changePin":
+                    testState.pin = msg.newPin;
+                    reply({ type: "pinChanged", ok: true });
+                    break;
+                case "survey":
+                    console.log("Survey submitted (test mode, not saved):", msg);
+                    break;
+                case "closeApp":
+                    setAdminStatus("Test mode: in the real app, this would close it now.");
+                    break;
+            }
+        }
+
+        function escapeHtml(s) {
+            return String(s)
+                .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+        }
+
+        /* -------------------------------
+           PRIZES + WHEEL DRAWING
+        --------------------------------*/
+        let allPrizes = [];     // every prize, including ones with 0 left (for the admin list)
+        let wheelPrizes = [];   // the prizes currently drawn on the wheel, in slice order
+
+        const WHEEL_COLORS = ["#d73f09", "#4A773C", "#003B5C", "#f7a162", "#D3832B"];
+        const WHEEL_RADIUS = 300;
+
+        onHost("prizes", msg => {
+            allPrizes = msg.prizes || [];
+            renderAdminList();
+
+            // Don't redraw the wheel under someone mid-spin or looking at their prize;
+            // resetAll() redraws it for the next visitor.
+            if (!isSpinning2 && !prizeModal.classList.contains("active")) renderWheel();
+        });
+
+        // Point on a circle, measured clockwise from 12 o'clock
+        function polar(r, deg) {
+            const a = deg * Math.PI / 180;
+            return [r * Math.sin(a), -r * Math.cos(a)];
+        }
+
+        // Long names go on two lines, split at the space nearest the middle
+        function splitLabel(name) {
+            if (name.length <= 12 || !name.includes(" ")) return [name];
+            const mid = name.length / 2;
+            let best = -1;
+            for (let i = 0; i < name.length; i++) {
+                if (name[i] === " " && (best < 0 || Math.abs(i - mid) < Math.abs(best - mid))) best = i;
+            }
+            return [name.slice(0, best), name.slice(best + 1)];
+        }
+
+        function renderWheel() {
+            wheelPrizes = allPrizes.filter(p => p.remaining > 0);
+            const n = wheelPrizes.length;
+            const R = WHEEL_RADIUS;
+            const slice = 360 / Math.max(n, 1);
+
+            let svg = `<svg class="wheel-svg" viewBox="${-R} ${-R} ${2 * R} ${2 * R}" xmlns="http://www.w3.org/2000/svg">`;
+
+            if (n === 0) {
+                svg += `<circle r="${R}" fill="#9a9a9a"/>`;
+            }
+
+            wheelPrizes.forEach((p, i) => {
+                let color = WHEEL_COLORS[i % WHEEL_COLORS.length];
+                // Keep the last slice from matching the first one it touches
+                if (n > 1 && i === n - 1 && i % WHEEL_COLORS.length === 0) color = WHEEL_COLORS[2];
+
+                if (n === 1) {
+                    svg += `<circle r="${R}" fill="${color}"/>`;
+                } else {
+                    const [x0, y0] = polar(R, i * slice);
+                    const [x1, y1] = polar(R, (i + 1) * slice);
+                    const largeArc = slice > 180 ? 1 : 0;
+                    svg += `<path class="wheel-slice" d="M0 0 L${x0} ${y0} A${R} ${R} 0 ${largeArc} 1 ${x1} ${y1} Z" fill="${color}"/>`;
+                }
+
+                // Label runs along the middle of the slice, reading outward
+                const lines = splitLabel(p.name);
+                const longest = Math.max(...lines.map(l => l.length));
+                const sliceWidthAtLabel = 2 * Math.PI * (R * 0.6) / n;
+                const size = Math.max(11, Math.min(
+                    30,
+                    380 / longest,                                  // fits between hub and rim
+                    sliceWidthAtLabel / (lines.length * 1.25)       // fits across the slice
+                ));
+                const labelY = -R * 0.6;
+                const mid = (i + 0.5) * slice;
+
+                svg += `<g transform="rotate(${mid})">` +
+                       `<text class="wheel-label" font-size="${size.toFixed(1)}" text-anchor="middle" dominant-baseline="central" ` +
+                       `transform="translate(0 ${labelY}) rotate(-90)">`;
+                lines.forEach((line, li) => {
+                    const dy = (li - (lines.length - 1) / 2) * size * 1.1;
+                    svg += `<tspan x="0" y="${dy.toFixed(1)}">${escapeHtml(line)}</tspan>`;
+                });
+                svg += `</text></g>`;
+            });
+
+            svg += `</svg>`;
+            wheel2.innerHTML = svg;
+
+            spinBtn2.classList.toggle("disabled", n === 0);
+        }
+
+        function showPrizeModal(prize) {
+            lastPrize = prize || "";
+            const title = document.getElementById("prizeTitle");
+            const value = document.getElementById("prizeValue");
+            const message = document.getElementById("prizeMessage");
+
+            if (prize) {
+                title.textContent = "Congratulations!";
+                value.textContent = prize;
+                value.classList.remove("hide");
+                message.innerHTML = `You've won a <strong id="prizeLabel">${escapeHtml(prize)}</strong>!`;
+            } else {
+                title.textContent = "Thank you!";
+                value.classList.add("hide");
+                message.textContent = "We've given away all of our prizes, but we really appreciate you taking the survey.";
+            }
+
+            prizeModal.classList.add("active");
+
+            if (prize) {
+                // burst from wheel center
+                const wheelRect = wheel2.getBoundingClientRect();
+                startConfetti(
+                    wheelRect.left + wheelRect.width / 2,
+                    wheelRect.top + wheelRect.height / 2
+                );
+            }
+        }
+
+        spinBtn2.addEventListener("click", () => {
+            if (isSpinning2 || wheelPrizes.length === 0) return;
+            isSpinning2 = true;
+            spinBtn2.classList.add("spinning");
+
+            // Pick the winner first (every slice has an equal chance),
+            // then turn the wheel so that slice stops under the pointer at 12 o'clock.
+            const n = wheelPrizes.length;
+            const slice = 360 / n;
+            const winnerIndex = Math.floor(Math.random() * n);
+            const winner = wheelPrizes[winnerIndex];
+
+            const sliceCentre = (winnerIndex + 0.5) * slice;
+            const wobble = (Math.random() - 0.5) * slice * 0.7;     // don't always stop dead-centre
+            const current = ((rotation2 % 360) + 360) % 360;
+            const target = (((360 - sliceCentre - wobble) % 360) + 360) % 360;
+            const spins = 5 + Math.floor(Math.random() * 3);
+
+            rotation2 += spins * 360 + ((target - current + 360) % 360);
+            wheel2.style.transform = `rotate(${rotation2}deg)`;
+
+            setTimeout(() => {
+                // Take one off the stock straight away, so it counts even if
+                // nobody taps Close on the prize popup
+                sendToHost({ type: "prizeWon", id: winner.id });
+                showPrizeModal(winner.name);
+
+                isSpinning2 = false;
+                spinBtn2.classList.remove("spinning");
+            }, 5000);
+        });
+
+        function resetAll() {
+            prizeModal.classList.remove("active");
+
+            round = 1;
+            questions = round1Questions;
+            qIndex = 0;
+
+            resetAnswers();
+            lastPrize = "";
+            renderWheel();  // pick up any stock changes for the next visitor
+            history = [];
+            clearContactFields();
+            document.getElementById("emailField").classList.add("hide");
+            radioContainer.classList.remove("hide");
+
+            // Reset wheel
+            rotation2 = 0;
+            wheel2.style.transition = "none";
+            wheel2.style.transform = "rotate(0deg)";
+            setTimeout(() => {
+                wheel2.style.transition = "transform 5s cubic-bezier(0.17, 0.67, 0.12, 0.99)";
+            }, 50);
+
+            spinnerWheel2.classList.remove("show");
+            youWinBlock.classList.remove("show");
+            questionForm.classList.remove("hide");
+            stopConfetti();
+            loadQuestion();
+        }
+
+        document.getElementById("closeModal").addEventListener("click", () => {
+            sendToHost({
+                type: "survey",
+                role: answers.role,
+                experience: answers.experience,
+                brought: answers.brought,
+                centers: answers.centers,
+                followUp: answers.followUp,
+                firstName: answers.firstName,
+                lastName: answers.lastName,
+                // Combined name kept for anything still reading the old "name" field
+                name: `${answers.firstName} ${answers.lastName}`.trim(),
+                dob: answers.dob,
+                email: answers.email,
+                gradEntry: answers.gradEntry,
+                program: answers.program,
+                prize: lastPrize
+            });
+
+            resetAll();
+        });
+
+        /* -------------------------------
+           ADMIN PANEL
+           Open: hold the logo for 3 seconds, or press Ctrl+Shift+A.
+           The PIN is checked by the C# app, which also refuses
+           prize changes until the PIN has been entered.
+        --------------------------------*/
+        const adminModal = document.getElementById("adminModal");
+        const adminLoginView = document.getElementById("adminLoginView");
+        const adminPrizesView = document.getElementById("adminPrizesView");
+        const adminPinInput = document.getElementById("adminPinInput");
+        const adminPinError = document.getElementById("adminPinError");
+        const adminStatus = document.getElementById("adminStatus");
+        const homeLogo = document.getElementById("homeLogo");
+
+        let logoHoldTimer = null;
+        let logoHeld = false;
+
+        homeLogo.addEventListener("pointerdown", () => {
+            logoHeld = false;
+            clearTimeout(logoHoldTimer);
+            logoHoldTimer = setTimeout(() => {
+                logoHeld = true;
+                openAdmin();
+            }, 3000);
+        });
+        ["pointerup", "pointerleave", "pointercancel"].forEach(evt =>
+            homeLogo.addEventListener(evt, () => clearTimeout(logoHoldTimer))
+        );
+        // Stop a touchscreen long-press from opening the right-click menu
+        homeLogo.addEventListener("contextmenu", e => e.preventDefault());
+
+        document.addEventListener("keydown", e => {
+            if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === "a") {
+                e.preventDefault();
+                openAdmin();
+            } else if (e.key === "Escape" && adminModal.classList.contains("active")) {
+                closeAdmin();
+            }
+        });
+
+        function setAdminStatus(text, isError = false) {
+            adminStatus.textContent = text;
+            adminStatus.classList.toggle("error", isError);
+        }
+
+        function openAdmin() {
+            if (adminModal.classList.contains("active")) return;
+            adminLoginView.classList.remove("hide");
+            adminPrizesView.classList.add("hide");
+            adminPinInput.value = "";
+            adminPinError.classList.remove("show");
+            setAdminStatus("");
+            adminModal.classList.add("active");
+            adminPinInput.focus();
+        }
+
+        function closeAdmin() {
+            adminModal.classList.remove("active");
+            sendToHost({ type: "adminLogout" });
+        }
+
+        function submitPin() {
+            const pin = adminPinInput.value.trim();
+            if (!pin) return;
+            sendToHost({ type: "adminLogin", pin });
+        }
+
+        document.getElementById("adminLoginBtn").addEventListener("click", submitPin);
+        adminPinInput.addEventListener("keydown", e => { if (e.key === "Enter") submitPin(); });
+        document.getElementById("adminCancelBtn").addEventListener("click", closeAdmin);
+        document.getElementById("adminDoneBtn").addEventListener("click", closeAdmin);
+
+        onHost("adminLogin", msg => {
+            if (msg.ok) {
+                adminLoginView.classList.add("hide");
+                adminPrizesView.classList.remove("hide");
+                sendToHost({ type: "getPrizes" });
+            } else {
+                adminPinError.classList.add("show");
+                adminPinInput.select();
+            }
+        });
+
+        onHost("pinChanged", () => {
+            document.getElementById("newPinInput").value = "";
+            setAdminStatus("PIN updated.");
+        });
+
+        onHost("error", msg => {
+            if (adminModal.classList.contains("active")) setAdminStatus(msg.message || "Something went wrong.", true);
+        });
+
+        function renderAdminList() {
+            const tbody = document.getElementById("adminPrizeRows");
+            tbody.innerHTML = "";
+
+            if (allPrizes.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" class="admin-empty">No prizes yet. Add one below.</td></tr>`;
+                return;
+            }
+
+            allPrizes.forEach(p => {
+                const tr = document.createElement("tr");
+                if (p.remaining <= 0) tr.classList.add("out");
+
+                tr.innerHTML = `
+                    <td>
+                        <input class="admin-input" type="text" maxlength="40" value="${escapeHtml(p.name)}" aria-label="Prize name">
+                        ${p.remaining <= 0 ? '<span class="admin-out-tag">Out of stock, not on the wheel</span>' : ""}
+                    </td>
+                    <td><input class="admin-input admin-qty" type="number" min="0" value="${p.remaining}" aria-label="How many left"></td>
+                    <td class="admin-given">${p.given}</td>
+                    <td><button type="button" class="admin-remove">Remove</button></td>
+                `;
+
+                const [nameInput, qtyInput] = tr.querySelectorAll("input");
+
+                const save = () => {
+                    const name = nameInput.value.trim();
+                    const remaining = Math.max(0, parseInt(qtyInput.value, 10) || 0);
+                    if (!name) { nameInput.value = p.name; return; }
+                    if (name === p.name && remaining === p.remaining) return;
+                    sendToHost({ type: "savePrize", id: p.id, name, remaining });
+                    setAdminStatus(`Saved ${name}.`);
+                };
+                nameInput.addEventListener("change", save);
+                qtyInput.addEventListener("change", save);
+
+                // Two taps to remove, so a stray tap doesn't delete a prize
+                const removeBtn = tr.querySelector(".admin-remove");
+                let armed = false;
+                let disarmTimer = null;
+                removeBtn.addEventListener("click", () => {
+                    if (!armed) {
+                        armed = true;
+                        removeBtn.textContent = "Tap again to remove";
+                        removeBtn.classList.add("armed");
+                        disarmTimer = setTimeout(() => {
+                            armed = false;
+                            removeBtn.textContent = "Remove";
+                            removeBtn.classList.remove("armed");
+                        }, 3000);
+                        return;
+                    }
+                    clearTimeout(disarmTimer);
+                    sendToHost({ type: "deletePrize", id: p.id });
+                    setAdminStatus(`Removed ${p.name}.`);
+                });
+
+                tbody.appendChild(tr);
+            });
+        }
+
+        document.getElementById("addPrizeForm").addEventListener("submit", e => {
+            e.preventDefault();
+            const nameInput = document.getElementById("newPrizeName");
+            const qtyInput = document.getElementById("newPrizeQty");
+            const name = nameInput.value.trim();
+            const remaining = Math.max(0, parseInt(qtyInput.value, 10) || 0);
+
+            if (!name) { nameInput.focus(); return; }
+            if (allPrizes.some(p => p.name.toLowerCase() === name.toLowerCase())) {
+                setAdminStatus(`There's already a prize called ${name}. Change its count instead.`, true);
+                return;
+            }
+
+            sendToHost({ type: "savePrize", id: 0, name, remaining });
+            setAdminStatus(`Added ${name}.`);
+            nameInput.value = "";
+            qtyInput.value = "10";
+            nameInput.focus();
+        });
+
+        // Two taps to close the app, same as removing a prize
+        const closeAppBtn = document.getElementById("closeAppBtn");
+        let closeArmed = false;
+        let closeDisarmTimer = null;
+
+        function disarmCloseApp() {
+            closeArmed = false;
+            clearTimeout(closeDisarmTimer);
+            closeAppBtn.textContent = "Close app";
+            closeAppBtn.classList.remove("armed");
+        }
+
+        closeAppBtn.addEventListener("click", () => {
+            if (!closeArmed) {
+                closeArmed = true;
+                closeAppBtn.textContent = "Tap again to close";
+                closeAppBtn.classList.add("armed");
+                closeDisarmTimer = setTimeout(disarmCloseApp, 3000);
+                return;
+            }
+            disarmCloseApp();
+            sendToHost({ type: "closeApp" });
+        });
+
+        document.getElementById("changePinBtn").addEventListener("click", () => {
+            const newPin = document.getElementById("newPinInput").value.trim();
+            if (!/^\d{4,8}$/.test(newPin)) {
+                setAdminStatus("The PIN must be 4 to 8 digits.", true);
+                return;
+            }
+            sendToHost({ type: "changePin", newPin });
+        });
+
+        // Load the prize list as soon as the page opens
+        renderWheel();
+        sendToHost({ type: "getPrizes" });
+    </script>
+</body>
+</html>
