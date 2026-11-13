@@ -1,0 +1,67 @@
+# ------------------------------------------------------------
+# Build output (dotnet build / dotnet publish recreate these)
+# ------------------------------------------------------------
+[Bb]in/
+[Oo]bj/
+[Pp]ublish/
+[Rr]elease/
+[Dd]ebug/
+x64/
+x86/
+[Aa][Rr][Mm]64/
+*.nupkg
+
+# ------------------------------------------------------------
+# Survey data — contains visitors' names, emails and birth dates.
+# Never commit these. The app creates them next to the .exe at runtime.
+# ------------------------------------------------------------
+*.db
+*.db-shm
+*.db-wal
+*.db-journal
+survey_export.csv
+survey_export.tmp
+errors.log
+
+# ------------------------------------------------------------
+# WebView2 browser cache (created next to the .exe on first run)
+# ------------------------------------------------------------
+*.WebView2/
+
+# ------------------------------------------------------------
+# Visual Studio / VS Code / Rider
+# ------------------------------------------------------------
+.vs/
+.vscode/
+.idea/
+*.user
+*.suo
+*.userprefs
+*.rsuser
+*.sln.docstates
+
+# ------------------------------------------------------------
+# NuGet (packages are restored automatically by dotnet restore)
+# ------------------------------------------------------------
+packages/
+*.nuget.props
+*.nuget.targets
+project.assets.json
+
+# ------------------------------------------------------------
+# Logs and temp files
+# ------------------------------------------------------------
+*.log
+*.tmp
+*.cache
+msbuild.binlog
+*.binlog
+
+# ------------------------------------------------------------
+# OS clutter
+# ------------------------------------------------------------
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+.DS_Store
