@@ -161,6 +161,115 @@
             font-family: "Stratum", sans-serif;
         }
 
+        .email-glow-wrap select {
+            max-width: 600px;
+            width: 600px;
+            padding: 15px 44px 15px 20px;
+            border-radius: 50px;
+            border: none;
+            outline: none;
+            background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%23333' stroke-width='2'/%3E%3C/svg%3E") no-repeat right 20px center;
+            -webkit-appearance: none;
+            appearance: none;
+            font-size: 1rem;
+            font-family: "Stratum", sans-serif;
+            color: #222;
+            cursor: pointer;
+        }
+
+        .email-glow-wrap:focus-within select {
+            box-shadow: var(--shadow-inset);
+        }
+
+        .email-glow-wrap input[type="date"] {
+            color: #222;
+        }
+
+        /* Contact info fields (follow-up question) */
+        .contact-fields {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .contact-field {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Two equal-width fields side by side, same overall width as a full-width field */
+        .field-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            width: 604px;              /* 600px input + 2px glow padding on each side */
+            max-width: 100%;
+            align-items: start;
+        }
+
+        .field-row .contact-field {
+            align-items: stretch;
+            min-width: 0;
+        }
+
+        .contact-fields .email-glow-wrap input,
+        .contact-fields .email-glow-wrap select {
+            height: 50px;
+            padding-top: 0;
+            padding-bottom: 0;
+        }
+
+        .field-row .email-glow-wrap {
+            display: flex;
+            width: 100%;
+        }
+
+        .field-row .email-glow-wrap input,
+        .field-row .email-glow-wrap select {
+            width: 100%;
+            max-width: 100%;
+            min-width: 0;
+        }
+
+        @media (max-width: 625px) {
+            .field-row {
+                grid-template-columns: 1fr;
+                width: 400px;
+            }
+        }
+
+        .field-label {
+            align-self: flex-start;
+            padding-left: 20px;
+            margin-bottom: 6px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #333;
+            text-align: left;
+        }
+
+        .required-note {
+            margin: 0 0 4px;
+            font-size: 0.85rem;
+            color: #666;
+        }
+
+        .field-error {
+            display: none;
+            align-self: flex-start;
+            padding-left: 20px;
+            margin-top: 6px;
+            color: #d73f09;
+            font-size: 0.9rem;
+            text-align: left;
+        }
+
+        .field-error.show {
+            display: block;
+        }
+
         .email-glow-wrap::placeholder {
             font-size: 1rem;
             color: #999;
@@ -770,11 +879,61 @@
                     <div class="question-label" id="questionLabel"></div>
                     <div id="radioContainer" class="radio-group hide"></div>
                     <div id="emailField" class="hide">
-                        <div class="email-glow-wrap">
-                            <input type="text" id="nameInput" placeholder="Please enter your name">
-                        </div><br>
-                        <div class="email-glow-wrap"style="margin-top: 20px;">
-                            <input type="email" id="emailInput" placeholder="Please enter your email">
+                        <div class="contact-fields">
+                            <p class="required-note">* Required</p>
+
+                            <div class="field-row">
+                                <div class="contact-field">
+                                    <label class="field-label" for="firstNameInput">First name / preferred name</label>
+                                    <div class="email-glow-wrap">
+                                        <input type="text" id="firstNameInput" autocomplete="given-name" aria-required="true" placeholder="First/Preferred Name">
+                                    </div>
+                                    <div class="field-error" id="firstNameError">This field is required.</div>
+                                </div>
+                                <div class="contact-field">
+                                    <label class="field-label" for="lastNameInput">Last name</label>
+                                    <div class="email-glow-wrap">
+                                        <input type="text" id="lastNameInput" autocomplete="family-name" aria-required="true" placeholder="Last Name">
+                                    </div>
+                                    <div class="field-error" id="lastNameError">This field is required.</div>
+                                </div>
+                            </div>
+
+                            <div class="contact-field">
+                                <label class="field-label" for="emailInput">Email</label>
+                                <div class="email-glow-wrap">
+                                    <input type="email" id="emailInput" autocomplete="email" aria-required="true" placeholder="Email">
+                                </div>
+                                <div class="field-error" id="emailError">This field is required.</div>
+                            </div>
+
+                            <div class="field-row">
+                                <div class="contact-field">
+                                    <label class="field-label" for="dobInput">Date of birth</label>
+                                    <div class="email-glow-wrap">
+                                        <input type="date" id="dobInput" autocomplete="bday" aria-required="true">
+                                    </div>
+                                    <div class="field-error" id="dobError">This field is required.</div>
+                                </div>
+                                <div class="contact-field">
+                                    <label class="field-label" for="gradEntrySelect">Planned grad school entry</label>
+                                    <div class="email-glow-wrap">
+                                        <select id="gradEntrySelect">
+                                            <option value="">Select a term</option>
+                                            <option value="Fall 2027">Fall 2027</option>
+                                            <option value="Fall 2028">Fall 2028</option>
+                                            <option value="Fall 2029">Fall 2029</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="contact-field">
+                                <label class="field-label" for="programInput">Academic program</label>
+                                <div class="email-glow-wrap">
+                                    <input type="text" id="programInput" placeholder="e.g. Ocean, Earth, and Atmospheric Sciences">
+                                </div>
+                            </div>
                         </div>
 
                         <div class="buttons-flex" style="margin-top: 20px;">
@@ -784,15 +943,6 @@
                             <button id="emailBackBtn" type="button" class="button">
                                 <div class="wrap"><p>Back</p></div>
                             </button>
-                        </div>
-
-                        <div id="nameError"
-                            style="color:#d73f09; font-size:0.9rem; margin-top:8px; display:none;">
-                            Please enter your name.
-                        </div>
-                        <div id="emailError"
-                            style="color:#d73f09; font-size:0.9rem; margin-top:8px; display:none;">
-                            Please enter a valid email address.
                         </div>
                     </div>
 
@@ -996,8 +1146,100 @@
         let questions = round1Questions;
         let qIndex = 0;
 
-        const answers = { role: "", experience: "", brought: "", name: "", email: "" };
+        const answers = {
+            role: "", experience: "", brought: "", centers: [], followUp: "",
+            firstName: "", lastName: "", dob: "", email: "", gradEntry: "", program: ""
+        };
         let lastPrize = 0;
+
+        function resetAnswers() {
+            answers.role = "";
+            answers.experience = "";
+            answers.brought = "";
+            answers.centers = [];
+            answers.followUp = "";
+            answers.firstName = "";
+            answers.lastName = "";
+            answers.dob = "";
+            answers.email = "";
+            answers.gradEntry = "";
+            answers.program = "";
+        }
+
+        /* -------------------------------
+           CONTACT INFO FIELDS
+        --------------------------------*/
+        const contactInputs = {
+            firstName: document.getElementById("firstNameInput"),
+            lastName:  document.getElementById("lastNameInput"),
+            dob:       document.getElementById("dobInput"),
+            email:     document.getElementById("emailInput"),
+            gradEntry: document.getElementById("gradEntrySelect"),
+            program:   document.getElementById("programInput")
+        };
+
+        const contactErrors = {
+            firstName: document.getElementById("firstNameError"),
+            lastName:  document.getElementById("lastNameError"),
+            dob:       document.getElementById("dobError"),
+            email:     document.getElementById("emailError")
+        };
+
+        function todayISO() {
+            const d = new Date();
+            const mm = String(d.getMonth() + 1).padStart(2, "0");
+            const dd = String(d.getDate()).padStart(2, "0");
+            return `${d.getFullYear()}-${mm}-${dd}`;
+        }
+
+        // Don't allow future birth dates in the date picker
+        contactInputs.dob.max = todayISO();
+        contactInputs.dob.min = "1900-01-01";
+
+        function setFieldError(key, show) {
+            contactErrors[key].classList.toggle("show", show);
+            contactInputs[key].style.boxShadow = show ? "0 0 0 3px rgba(215,63,9,0.4)" : "";
+        }
+
+        function clearContactFields() {
+            Object.values(contactInputs).forEach(el => {
+                el.value = "";
+                el.style.boxShadow = "";
+            });
+            Object.values(contactErrors).forEach(el => el.classList.remove("show"));
+        }
+
+        // Validates required fields, shows errors, and returns the values (or null if invalid)
+        function validateContactFields() {
+            const values = {
+                firstName: contactInputs.firstName.value.trim(),
+                lastName:  contactInputs.lastName.value.trim(),
+                dob:       contactInputs.dob.value,          // YYYY-MM-DD
+                email:     contactInputs.email.value.trim(),
+                gradEntry: contactInputs.gradEntry.value,
+                program:   contactInputs.program.value.trim()
+            };
+
+            const checks = {
+                firstName: !!values.firstName,
+                lastName:  !!values.lastName,
+                dob:       /^\d{4}-\d{2}-\d{2}$/.test(values.dob) &&
+                           values.dob >= "1900-01-01" && values.dob <= todayISO(),
+                email:     /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email)
+            };
+
+            let firstInvalid = null;
+            Object.keys(checks).forEach(key => {
+                setFieldError(key, !checks[key]);
+                if (!checks[key] && !firstInvalid) firstInvalid = contactInputs[key];
+            });
+
+            if (firstInvalid) {
+                firstInvalid.focus();
+                return null;
+            }
+            return values;
+        }
 
         const questionLabel = document.getElementById("questionLabel");
         const questionInput = document.getElementById("questionInput");
@@ -1076,8 +1318,7 @@
             radioContainer.classList.remove("checkbox-grid");
             formInner.classList.remove("tall-content");
             document.getElementById("emailField").classList.add("hide");
-            document.getElementById("nameInput").value = "";
-            document.getElementById("emailInput").value = "";
+            clearContactFields();
             // Always hide elements by default
             submitButton.classList.add("hide");
             document.getElementById("glowWrap").classList.add("hide");
@@ -1162,6 +1403,7 @@
                             if (input.value === "Yes") {
                                 radioContainer.classList.add("hide");
                                 document.getElementById("emailField").classList.remove("hide");
+                                contactInputs.firstName.focus();
                                 return;
                             } else {
                                 document.getElementById("emailField").classList.add("hide");
@@ -1198,9 +1440,11 @@
             // Show Yes/No options again
             radioContainer.classList.remove("hide");
 
-            // Clear email
-            document.getElementById("emailInput").value = "";
-            document.getElementById("nameInput").value = "";
+            // Clear contact fields
+            clearContactFields();
+
+            // Uncheck the radios so the user has to choose again
+            radioContainer.querySelectorAll("input[type='radio']").forEach(r => r.checked = false);
 
             // Re-select NOTHING (force user to choose again)
             radioContainer.querySelectorAll(".radio-option").forEach(opt => {
@@ -1234,6 +1478,14 @@
                 if (!selected) return;
 
                 value = selected.value;
+
+                // "Yes" on the follow-up question requires valid contact info
+                // (also catches pressing Enter inside one of the contact fields)
+                if (q.isEmailConditional && value === "Yes") {
+                    const contact = validateContactFields();
+                    if (!contact) return;
+                    Object.assign(answers, contact);
+                }
             }
 
             // --------------------------
@@ -1250,7 +1502,8 @@
                 else answers.experience = value;
             } else {
                 if (qIndex === 0) answers.brought = value;
-                else answers.email = value;
+                else if (qIndex === 1) answers.centers = value;
+                else answers.followUp = value;
             }
 
             history.push({ qIndex, value });
@@ -1265,56 +1518,15 @@
         });
 
         document.getElementById("emailSubmitBtn").addEventListener("click", () => {
-            const emailField = document.getElementById("emailInput");
-            const nameField  = document.getElementById("nameInput");
-
-            const email = emailField.value.trim();
-            const name  = nameField.value.trim();
-
-            const emailError = document.getElementById("emailError");
-            const nameError  = document.getElementById("nameError");
-
-            let valid = true;
-
-            // Email validation
-            const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-            if (!emailValid) {
-                emailError.style.display = "block";
-                emailField.style.boxShadow = "0 0 0 3px rgba(215,63,9,0.4)";
-                valid = false;
-            } else {
-                emailError.style.display = "none";
-                emailField.style.boxShadow = "";
-            }
-
-            // Name validation
-            if (!name) {
-                nameError.style.display = "block";
-                nameField.style.boxShadow = "0 0 0 3px rgba(215,63,9,0.4)";
-                valid = false;
-            } else {
-                nameError.style.display = "none";
-                nameField.style.boxShadow = "";
-            }
-
-            if (!valid) return;
-
-            // Save values
-            answers.email = email;
-            answers.name  = name;
-
-            // Submit to advance to next question
+            // Validation + saving happens in the submit handler
             questionForm.dispatchEvent(new Event("submit", { cancelable: true }));
         });
 
-        document.getElementById("nameInput").addEventListener("input", () => {
-            document.getElementById("nameError").style.display = "none";
-            document.getElementById("nameInput").style.boxShadow = "";
-        });
-
-        document.getElementById("emailInput").addEventListener("input", () => {
-            document.getElementById("emailError").style.display = "none";
-            document.getElementById("emailInput").style.boxShadow = "";
+        // Clear a field's error as soon as the user edits it
+        Object.keys(contactErrors).forEach(key => {
+            ["input", "change"].forEach(evt => {
+                contactInputs[key].addEventListener(evt, () => setFieldError(key, false));
+            });
         });
 
             
@@ -1397,10 +1609,7 @@
             questions = round1Questions;
             qIndex = 0;
 
-            answers.role = "";
-            answers.experience = "";
-            answers.brought = "";
-            answers.email = "";
+            resetAnswers();
 
             history = [];
 
@@ -1615,13 +1824,9 @@
             questions = round1Questions;
             qIndex = 0;
 
-            answers.role = "";
-            answers.experience = "";
-            answers.brought = "";
-            answers.name = "";
-            answers.email = "";
-            document.getElementById("emailInput").value = "";
-            document.getElementById("nameInput").value = "";
+            resetAnswers();
+            history = [];
+            clearContactFields();
             document.getElementById("emailField").classList.add("hide");
             radioContainer.classList.remove("hide");
 
@@ -1647,8 +1852,16 @@
                     role: answers.role,
                     experience: answers.experience,
                     brought: answers.brought,
-                    name: answers.name,
-                    email: answers.email
+                    centers: answers.centers,
+                    followUp: answers.followUp,
+                    firstName: answers.firstName,
+                    lastName: answers.lastName,
+                    // Combined name kept for anything still reading the old "name" field
+                    name: `${answers.firstName} ${answers.lastName}`.trim(),
+                    dob: answers.dob,
+                    email: answers.email,
+                    gradEntry: answers.gradEntry,
+                    program: answers.program
                 });
             }
 
